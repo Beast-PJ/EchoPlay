@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements SongAdapter.OnIte
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 fetchSongs();
             } else {
-                // Permission denied, show a message to the user
                 Log.e("MainActivity", "Permission denied to read storage");
             }
         }
