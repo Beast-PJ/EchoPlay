@@ -3,17 +3,26 @@ package com.beast.echoplay;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.beast.echoplay.MusicPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +33,23 @@ public class MainActivity extends AppCompatActivity implements SongAdapter.OnIte
     private RecyclerView recyclerView;
     private SongAdapter songAdapter;
     private List<Song> songList;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        boolean isNightMode = sharedPreferences.getBoolean("NightMode", false);
+        if (isNightMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -39,6 +60,37 @@ public class MainActivity extends AppCompatActivity implements SongAdapter.OnIte
         } else {
             fetchSongs();
         }
+
+        ImageButton menuButton = findViewById(R.id.menu_btn);
+        menuButton.setOnClickListener(view -> openOptionsMenu());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_night_mode) {
+            boolean isNightMode = sharedPreferences.getBoolean("NightMode", false);
+            if (isNightMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                editor.putBoolean("NightMode", false);
+                editor.apply();
+                Toast.makeText(this, "Night mode off", Toast.LENGTH_SHORT).show();
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor.putBoolean("NightMode", true);
+                editor.apply();
+                Toast.makeText(this, "Night mode on", Toast.LENGTH_SHORT).show();
+            }
+            recreate();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void fetchSongs() {
@@ -94,5 +146,4 @@ public class MainActivity extends AppCompatActivity implements SongAdapter.OnIte
         intent.putExtra("POSITION", position);
         startActivity(intent);
     }
-
 }
