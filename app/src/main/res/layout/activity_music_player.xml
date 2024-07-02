@@ -7,7 +7,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/mtrl_textinput_default_box_stroke_color"
-    android:paddingVertical="50dp">
+    android:paddingVertical="50dp"
+    tools:ignore="PrivateResource">
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +16,6 @@
         android:id="@+id/view2"
         app:cardCornerRadius="250dp"
 
-        android:layout_centerHorizontal="true"
         android:innerRadius="0dp"
         android:shape="ring"
         android:thicknessRatio="1.9">
