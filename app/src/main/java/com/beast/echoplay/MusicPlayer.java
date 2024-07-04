@@ -1,18 +1,15 @@
 package com.beast.echoplay;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,14 +17,14 @@ import java.util.ArrayList;
 public class MusicPlayer extends AppCompatActivity {
 
     private TextView songTitle, artistName, currentTime, totalTime;
-    private ImageView coverArt, playPauseButton, nextButton, previousButton;
+    private ImageView coverArt;
+    private ImageButton playPauseButton, nextButton, previousButton;
     private SeekBar seekBar;
-    private ArrayList<Song> songList;
-    private int position;
     private MediaPlayer mediaPlayer;
-    private Handler handler = new Handler();
+    private Handler handler;
+    private ArrayList<Song> playingQueue;
+    private int currentPosition;
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +40,11 @@ public class MusicPlayer extends AppCompatActivity {
         previousButton = findViewById(R.id.prevButton);
         seekBar = findViewById(R.id.seekBar);
 
-        Intent intent = getIntent();
-        songList = (ArrayList<Song>) intent.getSerializableExtra("SONG_LIST");
-        position = intent.getIntExtra("POSITION", 0);
+        handler = new Handler();
+        mediaPlayer = new MediaPlayer();
+
+        playingQueue = (ArrayList<Song>) getIntent().getSerializableExtra("queue");
+        currentPosition = 0;
 
         playSong();
 
@@ -60,10 +59,7 @@ public class MusicPlayer extends AppCompatActivity {
         });
 
         nextButton.setOnClickListener(v -> playNextSong());
-
         previousButton.setOnClickListener(v -> playPreviousSong());
-
-        mediaPlayer.setOnCompletionListener(mp -> playNextSong());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -90,7 +86,7 @@ public class MusicPlayer extends AppCompatActivity {
     }
 
     private void playSong() {
-        Song song = songList.get(position);
+        Song song = playingQueue.get(currentPosition);
         songTitle.setText(song.getName());
         artistName.setText(song.getArtist());
 
@@ -117,19 +113,19 @@ public class MusicPlayer extends AppCompatActivity {
     }
 
     private void playNextSong() {
-        if (position < songList.size() - 1) {
-            position++;
+        if (currentPosition < playingQueue.size() - 1) {
+            currentPosition++;
         } else {
-            position = 0;
+            currentPosition = 0;
         }
         playSong();
     }
 
     private void playPreviousSong() {
-        if (position > 0) {
-            position--;
+        if (currentPosition > 0) {
+            currentPosition--;
         } else {
-            position = songList.size() - 1;
+            currentPosition = playingQueue.size() - 1;
         }
         playSong();
     }
