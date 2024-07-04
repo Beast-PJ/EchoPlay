@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private SongAdapter musicAdapter;
     private ArrayList<Song> songList;
     private ArrayList<Song> playingQueue;
+    private ImageButton menuButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(musicAdapter);
 
-        ImageButton menuButton = findViewById(R.id.menu_btn);
+        menuButton = findViewById(R.id.menu_btn);
         menuButton.setOnClickListener(v -> {
             Switch nightModeSwitch = findViewById(R.id.action_night_mode);
             boolean isNightMode = nightModeSwitch.isChecked();
