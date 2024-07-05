@@ -22,7 +22,7 @@ public class MusicPlayer extends AppCompatActivity {
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
     private Handler handler;
-    private ArrayList<Song> playingQueue;
+    private ArrayList<MediaItem> playingQueue;
     private int currentPosition;
 
     @Override
@@ -43,7 +43,7 @@ public class MusicPlayer extends AppCompatActivity {
         handler = new Handler();
         mediaPlayer = new MediaPlayer();
 
-        playingQueue = (ArrayList<Song>) getIntent().getSerializableExtra("queue");
+        playingQueue = (ArrayList<MediaItem>) getIntent().getSerializableExtra("queue");
         currentPosition = 0;
 
         playSong();
@@ -86,8 +86,8 @@ public class MusicPlayer extends AppCompatActivity {
     }
 
     private void playSong() {
-        Song song = playingQueue.get(currentPosition);
-        songTitle.setText(song.getName());
+        MediaItem song = playingQueue.get(currentPosition);
+        songTitle.setText(song.getTitle());
         artistName.setText(song.getArtist());
 
         if (mediaPlayer != null) {

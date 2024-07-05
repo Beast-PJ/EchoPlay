@@ -1,6 +1,5 @@
 package com.beast.echoplay;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,35 +9,42 @@ import java.util.ArrayList;
 
 public class MusicUtils {
 
-    public static ArrayList<Song> getAllSongs(Context context) {
-        ArrayList<Song> songs = new ArrayList<>();
+    public static ArrayList<MediaItem> getAllMedia(Context context) {
+        ArrayList<MediaItem> mediaItems = new ArrayList<>();
 
         ContentResolver contentResolver = context.getContentResolver();
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Files.getContentUri("external");
+
         String[] projection = {
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.TITLE,
-                MediaStore.Audio.Media.ARTIST,
-                MediaStore.Audio.Media.DATA,
-                MediaStore.Audio.Media.DURATION
+                MediaStore.Files.FileColumns._ID,
+                MediaStore.Files.FileColumns.TITLE,
+                MediaStore.Files.FileColumns.MIME_TYPE,
+                MediaStore.Files.FileColumns.DATA,
+                MediaStore.Files.FileColumns.DURATION,
+                MediaStore.Files.FileColumns.ARTIST
         };
 
-        String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO + " OR "
+                + MediaStore.Files.FileColumns.MEDIA_TYPE + "="
+                + MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+
         Cursor cursor = contentResolver.query(uri, projection, selection, null, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID));
-                @SuppressLint("Range") String title = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE));
-                @SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
-                @SuppressLint("Range") String data = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA));
-                @SuppressLint("Range") String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION));
+                String id = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
+                String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
+                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
+                String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DURATION));
+                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.ARTIST));
 
-                Song song = new Song(id, title, artist, data, duration);
-                songs.add(song);
+                MediaItem mediaItem = new MediaItem(id, title, mimeType, data, duration, artist);
+                mediaItems.add(mediaItem);
             }
             cursor.close();
         }
-        return songs;
+        return mediaItems;
     }
 }

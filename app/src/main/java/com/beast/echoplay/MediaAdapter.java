@@ -9,19 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
+public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> {
 
     private Context context;
-    private ArrayList<Song> songList;
+    private ArrayList<MediaItem> mediaList;
     private OnItemClickListener onItemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(Song song);
+        void onItemClick(MediaItem mediaItem);
     }
 
-    public SongAdapter(Context context, ArrayList<Song> songList, OnItemClickListener onItemClickListener) {
+    public MediaAdapter(Context context, ArrayList<MediaItem> mediaList, OnItemClickListener onItemClickListener) {
         this.context = context;
-        this.songList = songList;
+        this.mediaList = mediaList;
         this.onItemClickListener = onItemClickListener;
     }
 
@@ -32,28 +32,27 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
-
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Song song = songList.get(position);
-        holder.songName.setText(song.getName());
-        holder.artistName.setText(song.getArtist());
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(song));
+        MediaItem mediaItem = mediaList.get(position);
+        holder.songName.setText(mediaItem.getTitle());
+        holder.artist.setText(mediaItem.getArtist());
+        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(mediaItem));
     }
 
     @Override
     public int getItemCount() {
-        return songList.size();
+        return mediaList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView songName, artistName, duration;
+
+        TextView songName, artist, duration;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name);
-            artistName = itemView.findViewById(R.id.artist);
+            artist = itemView.findViewById(R.id.artist);
             duration = itemView.findViewById(R.id.duration);
         }
     }

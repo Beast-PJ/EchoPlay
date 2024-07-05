@@ -5,7 +5,7 @@ import java.util.List;
 
 public class QueueManager {
     private static QueueManager instance;
-    private List<Song> queue;
+    private List<MediaItem> queue;
     private int currentPosition;
 
     private QueueManager() {
@@ -20,17 +20,17 @@ public class QueueManager {
         return instance;
     }
 
-    public void setQueue(List<Song> songs) {
+    public void setQueue(List<MediaItem> MediaItems) {
         queue.clear();
-        queue.addAll(songs);
+        queue.addAll(MediaItems);
         currentPosition = 0;
     }
 
-    public Song getCurrentSong() {
+    public MediaItem getCurrentMediaItem() {
         return currentPosition >= 0 && currentPosition < queue.size() ? queue.get(currentPosition) : null;
     }
 
-    public Song getNextSong() {
+    public MediaItem getNextMediaItem() {
         if (currentPosition < queue.size() - 1) {
             currentPosition++;
             return queue.get(currentPosition);
@@ -38,7 +38,7 @@ public class QueueManager {
         return null;
     }
 
-    public Song getPreviousSong() {
+    public MediaItem getPreviousMediaItem() {
         if (currentPosition > 0) {
             currentPosition--;
             return queue.get(currentPosition);
