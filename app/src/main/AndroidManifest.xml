@@ -16,10 +16,13 @@
         android:theme="@style/Theme.EchoPlay"
         tools:targetApi="31">
         <activity
+            android:name=".FolderContentActivity"
+            android:exported="false" />
+        <activity
             android:name=".VideoPlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".MusicPlayer"
+            android:name=".PlayerActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

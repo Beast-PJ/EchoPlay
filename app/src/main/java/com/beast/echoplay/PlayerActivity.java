@@ -1,53 +1,47 @@
 package com.beast.echoplay;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageButton;
+import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.VideoView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 public class PlayerActivity extends AppCompatActivity {
-
-    private VideoView videoView;
-    private MediaPlayer mediaPlayer;
+    private TextView songTitle, songArtist, songDuration;
+    private ImageView albumArt, playPauseButton;
     private SeekBar seekBar;
-    private TextView songTitle, artistName;
-    private ImageButton playPauseButton, nextButton, previousButton;
-    private ImageView coverArt;
-    private ArrayList<MediaItem> playingQueue;
-    private int position;
+    private MediaPlayer mediaPlayer;
+    private Handler handler = new Handler();
+    private Runnable updateSeekBar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_player);
 
         songTitle = findViewById(R.id.song_title);
-        artistName = findViewById(R.id.artist_name);
-        seekBar = findViewById(R.id.seek_bar);
+        songArtist = findViewById(R.id.artist_name);
+        songDuration = findViewById(R.id.totalTime);
+        albumArt = findViewById(R.id.coverArt);
         playPauseButton = findViewById(R.id.play_pause_button);
-        nextButton = findViewById(R.id.next_button);
-        previousButton = findViewById(R.id.previous_button);
-        coverArt = findViewById(R.id.coverArt);
+        seekBar = findViewById(R.id.seek_bar);
 
-        Intent intent = getIntent();
-        MediaItem mediaItem = (MediaItem) intent.getSerializableExtra("mediaItem");
-        playingQueue = (ArrayList<MediaItem>) intent.getSerializableExtra("queue");
-        position = intent.getIntExtra("position", 0);
+        MediaItem mediaItem = (MediaItem) getIntent().getSerializableExtra("mediaItem");
+        if (mediaItem != null) {
+            songTitle.setText(mediaItem.getTitle());
+            songArtist.setText(mediaItem.getArtist());
+            songDuration.setText(mediaItem.getDuration());
+            // Load album art if available, otherwise set a default image
+            // ...
 
-        setMediaItem(mediaItem);
+            initializeMediaPlayer(mediaItem.getPath());
+        }
 
         playPauseButton.setOnClickListener(v -> {
             if (mediaPlayer.isPlaying()) {
@@ -59,62 +53,55 @@ public class PlayerActivity extends AppCompatActivity {
             }
         });
 
-        nextButton.setOnClickListener(v -> playNext());
-        previousButton.setOnClickListener(v -> playPrevious());
+        updateSeekBar = new Runnable() {
+            @Override
+            public void run() {
+                if (mediaPlayer != null) {
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    handler.postDelayed(this, 1000);
+                }
+            }
+        };
     }
 
-    private void setMediaItem(MediaItem mediaItem) {
-        songTitle.setText(mediaItem.getTitle());
-        artistName.setText(mediaItem.getArtist());
-
-        if (mediaItem.getMimeType().startsWith("audio")) {
-            mediaPlayer = MediaPlayer.create(this, Uri.parse(mediaItem.getData()));
+    private void initializeMediaPlayer(String path) {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(path);
+            mediaPlayer.prepare();
             mediaPlayer.start();
             playPauseButton.setImageResource(R.drawable.pause);
+            seekBar.setMax(mediaPlayer.getDuration());
+            handler.post(updateSeekBar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(mediaItem.getData());
-            byte[] artBytes = mmr.getEmbeddedPicture();
-            if (artBytes != null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length);
-                coverArt.setImageBitmap(bitmap);
-            } else {
-                coverArt.setImageResource(R.drawable.ic_launcher_foreground);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    mediaPlayer.seekTo(progress);
+                }
             }
 
-            seekBar.setMax(mediaPlayer.getDuration());
-            seekBar.setProgress(0);
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                    if (fromUser) {
-                        mediaPlayer.seekTo(progress);
-                    }
-                }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
 
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
 
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-
-            mediaPlayer.setOnCompletionListener(mp -> playNext());
-
-        }
+        mediaPlayer.setOnCompletionListener(mp -> playPauseButton.setImageResource(R.drawable.play));
     }
 
-    private void playNext() {
-        if (position < playingQueue.size() - 1) {
-            position++;
-            setMediaItem(playingQueue.get(position));
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
-    }
-
-    private void playPrevious() {
-        if (position > 0) {
-            position--;
-            setMediaItem(playingQueue.get(position));
-        }
+        handler.removeCallbacks(updateSeekBar);
     }
 }

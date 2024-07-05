@@ -1,14 +1,10 @@
 package com.beast.echoplay;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,15 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
+    private Context context;
+    private List<MediaItem> mediaItemList;
 
-    private final Context context;
-    private final List<MediaItem> mediaItems;
-    private final OnMediaClickListener mediaClickListener;
-
-    public MediaAdapter(Context context, List<MediaItem> mediaItems, OnMediaClickListener mediaClickListener) {
+    public MediaAdapter(Context context, List<MediaItem> mediaItemList) {
         this.context = context;
-        this.mediaItems = mediaItems;
-        this.mediaClickListener = mediaClickListener;
+        this.mediaItemList = mediaItemList;
     }
 
     @NonNull
@@ -37,57 +30,36 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
-        try {
-            MediaItem mediaItem = mediaItems.get(position);
-            holder.songNameTextView.setText(mediaItem.getTitle());
-            holder.artistTextView.setText(mediaItem.getArtist());
-            holder.durationTextView.setText(formatDuration(Long.parseLong(mediaItem.getDuration())));
+        MediaItem mediaItem = mediaItemList.get(position);
+        holder.songName.setText(mediaItem.getTitle());
+//        holder.artistName.setText(mediaItem.getArtist());
+        holder.duration.setText(mediaItem.getDuration());
 
-            // Retrieve and set album art
-            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(mediaItem.getPath());
-            byte[] artBytes = mmr.getEmbeddedPicture();
-            if (artBytes != null) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length);
-                holder.albumArtImageView.setImageBitmap(bitmap);
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent;
+            if (mediaItem.getMimeType().startsWith("audio")) {
+                intent = new Intent(context, PlayerActivity.class);
             } else {
-                holder.albumArtImageView.setImageResource(R.drawable.ic_launcher_foreground); // default image
+                intent = new Intent(context, VideoPlayerActivity.class);
             }
-            mmr.release();
-
-            holder.itemView.setOnClickListener(v -> mediaClickListener.onMediaClick(mediaItem, mediaItems));
-        } catch (Exception e) {
-            Log.e("MediaAdapter", "Error binding media item", e);
-        }
+            intent.putExtra("mediaItem", mediaItem);
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mediaItems.size();
+        return mediaItemList.size();
     }
 
     public static class MediaViewHolder extends RecyclerView.ViewHolder {
-        TextView songNameTextView;
-        TextView artistTextView;
-        TextView durationTextView;
-        ImageView albumArtImageView;
+        TextView songName, artistName, duration;
 
         public MediaViewHolder(@NonNull View itemView) {
             super(itemView);
-            songNameTextView = itemView.findViewById(R.id.song_name);
-            artistTextView = itemView.findViewById(R.id.artist);
-            durationTextView = itemView.findViewById(R.id.duration);
-            albumArtImageView = itemView.findViewById(R.id.album_art);
+            songName = itemView.findViewById(R.id.song_name);
+            artistName = itemView.findViewById(R.id.artist_name);
+            duration = itemView.findViewById(R.id.duration);
         }
-    }
-
-    public interface OnMediaClickListener {
-        void onMediaClick(MediaItem mediaItem, List<MediaItem> mediaItems);
-    }
-
-    private String formatDuration(long duration) {
-        long minutes = (duration / 1000) / 60;
-        long seconds = (duration / 1000) % 60;
-        return String.format("%02d:%02d", minutes, seconds);
     }
 }

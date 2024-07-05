@@ -46,8 +46,10 @@ public class MusicUtils {
                 @SuppressLint("Range") String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DURATION));
                 @SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.ARTIST));
                 @SuppressLint("Range") String parent = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.PARENT));
+                int dataIndex = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+                String path = cursor.getString(dataIndex);
 
-                MediaItem mediaItem = new MediaItem(id, title, mimeType, data, duration, artist);
+                MediaItem mediaItem = new MediaItem(id, title, mimeType, data, path, duration, artist);
 
                 if (!mediaMap.containsKey(parent)) {
                     mediaMap.put(parent, new ArrayList<>());

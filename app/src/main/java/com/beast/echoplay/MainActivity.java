@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Switch;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,18 +25,16 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 123;
     private RecyclerView recyclerViewFolders;
-    private RecyclerView recyclerViewMedia;
     private FolderAdapter folderAdapter;
-    private MediaAdapter mediaAdapter;
     private HashMap<String, List<MediaItem>> mediaMap;
-    private ArrayList<MediaItem> playingQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         recyclerViewFolders = findViewById(R.id.recyclerViewFolders);
-        recyclerViewMedia = findViewById(R.id.recyclerViewMedia);
+        recyclerViewFolders.setLayoutManager(new LinearLayoutManager(this));
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
@@ -51,36 +51,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
+        recyclerViewFolders = findViewById(R.id.recyclerViewFolders);
         recyclerViewFolders.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewMedia.setLayoutManager(new LinearLayoutManager(this));
-
-        playingQueue = new ArrayList<>();
     }
 
     private void loadMedia() {
         mediaMap = MusicUtils.getAllMediaByFolder(this);
+        Log.d("MainActivity", "Loaded media: " + mediaMap.size() + " folders");
 
         List<String> folderList = new ArrayList<>(mediaMap.keySet());
+        Collections.sort(folderList); // Sort folders alphabetically
+
         folderAdapter = new FolderAdapter(this, folderList, folderName -> {
             List<MediaItem> mediaItems = mediaMap.get(folderName);
-            mediaAdapter = new MediaAdapter(MainActivity.this, mediaItems, (mediaItem, mediaItems1) -> playMedia(mediaItem, mediaItems1));
-            recyclerViewMedia.setAdapter(mediaAdapter);
+            Intent intent = new Intent(MainActivity.this, FolderContentActivity.class);
+            intent.putExtra("folderName", folderName);
+            intent.putExtra("mediaItems", (ArrayList<MediaItem>) mediaItems);
+            startActivity(intent);
         });
         recyclerViewFolders.setAdapter(folderAdapter);
-    }
-
-    private void playMedia(MediaItem mediaItem, List<MediaItem> mediaItems) {
-        playingQueue.clear();
-        playingQueue.addAll(mediaItems);
-        int position = playingQueue.indexOf(mediaItem);
-
-        Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-        intent.putExtra("mediaItem", mediaItem);
-        intent.putExtra("queue", playingQueue);
-        intent.putExtra("position", position);
-        startActivity(intent);
     }
 
     @Override
@@ -89,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadMedia();
-            } else {
-                // Permission denied
             }
         }
     }
