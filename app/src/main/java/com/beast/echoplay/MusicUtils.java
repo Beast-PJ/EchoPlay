@@ -1,16 +1,21 @@
 package com.beast.echoplay;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 public class MusicUtils {
 
-    public static ArrayList<MediaItem> getAllMedia(Context context) {
-        ArrayList<MediaItem> mediaItems = new ArrayList<>();
+    public static HashMap<String, List<MediaItem>> getAllMediaByFolder(Context context) {
+        HashMap<String, List<MediaItem>> mediaMap = new HashMap<>();
 
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = MediaStore.Files.getContentUri("external");
@@ -21,7 +26,8 @@ public class MusicUtils {
                 MediaStore.Files.FileColumns.MIME_TYPE,
                 MediaStore.Files.FileColumns.DATA,
                 MediaStore.Files.FileColumns.DURATION,
-                MediaStore.Files.FileColumns.ARTIST
+                MediaStore.Files.FileColumns.ARTIST,
+                MediaStore.Files.FileColumns.PARENT
         };
 
         String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "="
@@ -33,18 +39,24 @@ public class MusicUtils {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
-                String title = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
-                String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
-                String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-                String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DURATION));
-                String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.ARTIST));
+                @SuppressLint("Range") String id = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
+                @SuppressLint("Range") String title = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
+                @SuppressLint("Range") String mimeType = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.MIME_TYPE));
+                @SuppressLint("Range") String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
+                @SuppressLint("Range") String duration = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DURATION));
+                @SuppressLint("Range") String artist = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.ARTIST));
+                @SuppressLint("Range") String parent = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.PARENT));
 
                 MediaItem mediaItem = new MediaItem(id, title, mimeType, data, duration, artist);
-                mediaItems.add(mediaItem);
+
+                if (!mediaMap.containsKey(parent)) {
+                    mediaMap.put(parent, new ArrayList<>());
+                }
+                mediaMap.get(parent).add(mediaItem);
             }
             cursor.close();
         }
-        return mediaItems;
+
+        return mediaMap;
     }
 }

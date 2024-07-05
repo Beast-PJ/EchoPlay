@@ -1,59 +1,93 @@
 package com.beast.echoplay;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
 
-public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.ViewHolder> {
+import java.util.List;
 
-    private Context context;
-    private ArrayList<MediaItem> mediaList;
-    private OnItemClickListener onItemClickListener;
+public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
 
-    public interface OnItemClickListener {
-        void onItemClick(MediaItem mediaItem);
-    }
+    private final Context context;
+    private final List<MediaItem> mediaItems;
+    private final OnMediaClickListener mediaClickListener;
 
-    public MediaAdapter(Context context, ArrayList<MediaItem> mediaList, OnItemClickListener onItemClickListener) {
+    public MediaAdapter(Context context, List<MediaItem> mediaItems, OnMediaClickListener mediaClickListener) {
         this.context = context;
-        this.mediaList = mediaList;
-        this.onItemClickListener = onItemClickListener;
+        this.mediaItems = mediaItems;
+        this.mediaClickListener = mediaClickListener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.music_item, parent, false);
-        return new ViewHolder(view);
+        return new MediaViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MediaItem mediaItem = mediaList.get(position);
-        holder.songName.setText(mediaItem.getTitle());
-        holder.artist.setText(mediaItem.getArtist());
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(mediaItem));
+    public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
+        try {
+            MediaItem mediaItem = mediaItems.get(position);
+            holder.songNameTextView.setText(mediaItem.getTitle());
+            holder.artistTextView.setText(mediaItem.getArtist());
+            holder.durationTextView.setText(formatDuration(Long.parseLong(mediaItem.getDuration())));
+
+            // Retrieve and set album art
+            MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+            mmr.setDataSource(mediaItem.getPath());
+            byte[] artBytes = mmr.getEmbeddedPicture();
+            if (artBytes != null) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(artBytes, 0, artBytes.length);
+                holder.albumArtImageView.setImageBitmap(bitmap);
+            } else {
+                holder.albumArtImageView.setImageResource(R.drawable.ic_launcher_foreground); // default image
+            }
+            mmr.release();
+
+            holder.itemView.setOnClickListener(v -> mediaClickListener.onMediaClick(mediaItem, mediaItems));
+        } catch (Exception e) {
+            Log.e("MediaAdapter", "Error binding media item", e);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mediaList.size();
+        return mediaItems.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class MediaViewHolder extends RecyclerView.ViewHolder {
+        TextView songNameTextView;
+        TextView artistTextView;
+        TextView durationTextView;
+        ImageView albumArtImageView;
 
-        TextView songName, artist, duration;
-
-        public ViewHolder(@NonNull View itemView) {
+        public MediaViewHolder(@NonNull View itemView) {
             super(itemView);
-            songName = itemView.findViewById(R.id.song_name);
-            artist = itemView.findViewById(R.id.artist);
-            duration = itemView.findViewById(R.id.duration);
+            songNameTextView = itemView.findViewById(R.id.song_name);
+            artistTextView = itemView.findViewById(R.id.artist);
+            durationTextView = itemView.findViewById(R.id.duration);
+            albumArtImageView = itemView.findViewById(R.id.album_art);
         }
+    }
+
+    public interface OnMediaClickListener {
+        void onMediaClick(MediaItem mediaItem, List<MediaItem> mediaItems);
+    }
+
+    private String formatDuration(long duration) {
+        long minutes = (duration / 1000) / 60;
+        long seconds = (duration / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }

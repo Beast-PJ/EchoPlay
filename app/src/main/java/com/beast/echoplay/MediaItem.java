@@ -9,6 +9,7 @@ public class MediaItem implements Serializable {
     private String data;
     private String duration;
     private String artist;
+    private String path;
 
     public MediaItem(String id, String title, String mimeType, String data, String duration, String artist) {
         this.id = id;
@@ -41,5 +42,8 @@ public class MediaItem implements Serializable {
 
     public String getArtist() {
         return artist;
+    }
+    public String getPath() {
+        return path;
     }
 }

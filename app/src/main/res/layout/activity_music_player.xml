@@ -27,7 +27,7 @@
         android:layout_gravity="center_horizontal"/>
     </androidx.cardview.widget.CardView>
     <TextView
-        android:id="@+id/songTitle"
+        android:id="@+id/song_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Song Title"
@@ -39,12 +39,12 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
-        android:id="@+id/songArtist"
+        android:id="@+id/artist_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Artist"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@id/songTitle"
+        app:layout_constraintTop_toBottomOf="@id/song_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,15 +67,15 @@
         android:layout_marginTop="16dp"
         android:text="03:00"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/songArtist"
+        app:layout_constraintTop_toBottomOf="@id/artist_name"
         tools:ignore="NotSibling" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/songArtist"
+        app:layout_constraintTop_toBottomOf="@id/artist_name"
         app:layout_constraintStart_toEndOf="@id/currentTime"
         app:layout_constraintEnd_toStartOf="@id/totalTime"
         app:layout_constraintBottom_toBottomOf="@id/currentTime" />
@@ -91,32 +91,31 @@
 
 
         <ImageButton
-            android:id="@+id/prevButton"
+            android:id="@+id/previous_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:background="@drawable/rounded_corner"
             android:src="@drawable/previous"
             android:text="Previous"
-            app:layout_constraintEnd_toStartOf="@id/nextButton"
+            app:layout_constraintEnd_toStartOf="@id/next_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playPauseButton" />
+            app:layout_constraintTop_toBottomOf="@id/play_pause_button" />
 
         <ImageButton
-            android:id="@+id/playPauseButton"
+            android:id="@+id/play_pause_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
             android:background="@drawable/rounded_corner"
             android:src="@drawable/play"
             android:text="Play"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/songArtist" />
+            app:layout_constraintTop_toBottomOf="@id/artist_name" />
 
         <ImageButton
-            android:id="@+id/nextButton"
+            android:id="@+id/next_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginHorizontal="20dp"
@@ -124,7 +123,7 @@
             android:src="@drawable/next"
             android:text="Next"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/prevButton"
-            app:layout_constraintTop_toBottomOf="@id/playPauseButton" />
+            app:layout_constraintStart_toEndOf="@id/previous_button"
+            app:layout_constraintTop_toBottomOf="@id/play_pause_button" />
     </LinearLayout>
 </LinearLayout>
