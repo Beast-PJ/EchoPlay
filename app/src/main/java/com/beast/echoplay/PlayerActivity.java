@@ -91,7 +91,6 @@ public class PlayerActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
-
         mediaPlayer.setOnCompletionListener(mp -> playPauseButton.setImageResource(R.drawable.play));
     }
 
