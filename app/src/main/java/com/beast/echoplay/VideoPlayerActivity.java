@@ -1,13 +1,12 @@
 package com.beast.echoplay;
 
 import static com.beast.echoplay.VideoAdapter.videoFiles;
+import static com.beast.echoplay.VideoFolderAdapter.foldervideoFiles;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,12 +20,14 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class VideoPlayerActivity extends AppCompatActivity {
-    private TextView videoTitle;
-    private VideoView videoView;
     PlayerView playerView;
     SimpleExoPlayer simpleExoPlayer;
     int postion = -1;
+    ArrayList<VideoFiles> myFiles = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,7 +37,13 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         playerView = findViewById(R.id.exoplayer);
         postion = getIntent().getIntExtra("postion", -1);
-        String path = videoFiles.get(postion).getPath();
+        String sender = getIntent().getStringExtra("sender");
+        if (Objects.equals(sender, "FolderIsSending")) {
+            myFiles = foldervideoFiles;
+        } else {
+            myFiles = videoFiles;
+        }
+        String path = myFiles.get(postion).getPath();
         if (path != null) {
             Uri uri = Uri.parse(path);
             simpleExoPlayer = new SimpleExoPlayer.Builder(this).build();

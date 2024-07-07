@@ -17,15 +17,15 @@ import com.bumptech.glide.Glide;
 import java.io.File;
 import java.util.ArrayList;
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder> {
+public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.MyViewHolder> {
+    static ArrayList<VideoFiles> foldervideoFiles;
     private final Context mContext;
-    static ArrayList<VideoFiles> videoFiles;
     View view;
-    public VideoAdapter(Context mContext, ArrayList<VideoFiles> videoFiles) {
-        this.mContext = mContext;
-        VideoAdapter.videoFiles = videoFiles;
-    }
 
+    public VideoFolderAdapter(Context mContext, ArrayList<VideoFiles> foldervideoFiles) {
+        this.mContext = mContext;
+        VideoFolderAdapter.foldervideoFiles = foldervideoFiles;
+    }
 
 
     @NonNull
@@ -38,15 +38,15 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
     @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.fileName.setText(videoFiles.get(position).getTitle());
-        holder.videoDuration.setText(videoFiles.get(position).getSize());
-        Glide.with(mContext).load(new File(videoFiles.get(position).getPath())).into(holder.thumbnail);
+        holder.fileName.setText(foldervideoFiles.get(position).getTitle());
+        holder.videoDuration.setText(foldervideoFiles.get(position).getSize());
+        Glide.with(mContext).load(new File(foldervideoFiles.get(position).getPath())).into(holder.thumbnail);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, VideoPlayerActivity.class);
                 intent.putExtra("postion", position);
-                intent.putExtra("sender", "FilesIsSending");
+                intent.putExtra("sender", "FolderIsSending");
                 mContext.startActivity(intent);
             }
         });
@@ -55,13 +55,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        return videoFiles.size();
+        return foldervideoFiles.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView thumbnail,menuMore;
-        TextView fileName,videoDuration;
+        ImageView thumbnail, menuMore;
+        TextView fileName, videoDuration;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             thumbnail = itemView.findViewById(R.id.thumbnail);

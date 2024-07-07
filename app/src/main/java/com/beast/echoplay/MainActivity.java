@@ -128,10 +128,9 @@ public class MainActivity extends AppCompatActivity {
                 VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path);
                 int slashFirstIndex = path.lastIndexOf("/");
                 String subString = path.substring(0, slashFirstIndex);
-                int index = subString.lastIndexOf("/");
-                String folderName = subString.substring(index + 1, slashFirstIndex);
-                if (!folderList.contains(folderName)) {
-                    folderList.add(folderName);
+
+                if (!folderList.contains(subString)) {
+                    folderList.add(subString);
                 }
                 tempvideoFiles.add(videoFiles);
             }
