@@ -2,6 +2,7 @@ package com.beast.echoplay;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +18,12 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder> {
-    private Context mContext;
-    private ArrayList<VideoFiles> videoFiles;
+    private final Context mContext;
+    static ArrayList<VideoFiles> videoFiles;
     View view;
     public VideoAdapter(Context mContext, ArrayList<VideoFiles> videoFiles) {
         this.mContext = mContext;
-        this.videoFiles = videoFiles;
+        VideoAdapter.videoFiles = videoFiles;
     }
 
 
@@ -40,6 +41,14 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         holder.fileName.setText(videoFiles.get(position).getTitle());
         holder.videoDuration.setText(videoFiles.get(position).getSize());
         Glide.with(mContext).load(new File(videoFiles.get(position).getPath())).into(holder.thumbnail);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, VideoPlayerActivity.class);
+                intent.putExtra("postion", position);
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

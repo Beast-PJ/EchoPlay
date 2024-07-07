@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(5);
                 String fileName = cursor.getString(6);
 
-                Log.e("path",path);
                 VideoFiles videoFiles = new VideoFiles(id,title,fileName,dateAdded,size,path);
                 tempvideoFiles.add(videoFiles);
             }
