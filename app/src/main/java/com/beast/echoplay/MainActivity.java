@@ -2,14 +2,12 @@ package com.beast.echoplay;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -24,7 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FolderAdapter folderAdapter;
     private HashMap<String, List<MediaItem>> mediaMap;
     static ArrayList<VideoFiles> videoFiles = new ArrayList<>();
+    static ArrayList<String> folderList = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -79,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
         } else {
-            loadMedia();
             videoFiles =  getVideoFiles(this);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
@@ -93,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                loadMedia();
                 videoFiles =  getVideoFiles(this);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
@@ -102,21 +98,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadMedia() {
-        mediaMap = MusicUtils.getAllMediaByFolder(this);
-        Log.d("MainActivity", "Loaded media: " + mediaMap.size() + " folders");
 
-        List<String> folderList = new ArrayList<>(mediaMap.keySet());
-        Collections.sort(folderList); // Sort folders alphabetically
-
-        folderAdapter = new FolderAdapter(this, folderList, folderName -> {
-            List<MediaItem> mediaItems = mediaMap.get(folderName);
-            Intent intent = new Intent(MainActivity.this, FolderContentActivity.class);
-            intent.putExtra("folderName", folderName);
-            intent.putExtra("mediaItems", (ArrayList<MediaItem>) mediaItems);
-            startActivity(intent);
-        });
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<VideoFiles> getVideoFiles(Context context) {
@@ -143,7 +125,14 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(5);
                 String fileName = cursor.getString(6);
 
-                VideoFiles videoFiles = new VideoFiles(id,title,fileName,dateAdded,size,path);
+                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path);
+                int slashFirstIndex = path.lastIndexOf("/");
+                String subString = path.substring(0, slashFirstIndex);
+                int index = subString.lastIndexOf("/");
+                String folderName = subString.substring(index + 1, slashFirstIndex);
+                if (!folderList.contains(folderName)) {
+                    folderList.add(folderName);
+                }
                 tempvideoFiles.add(videoFiles);
             }
             cursor.close();

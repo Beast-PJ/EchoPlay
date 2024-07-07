@@ -9,49 +9,46 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
+public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyHolder> {
+    private final Context mcontext;
+    private final List<VideoFiles> videoFiles;
+    private final ArrayList<String> folderName;
 
-    private Context context;
-    private List<String> folders;
-    private OnFolderClickListener onFolderClickListener;
-
-    public interface OnFolderClickListener {
-        void onFolderClick(String folderName);
-    }
-
-    public FolderAdapter(Context context, List<String> folders, OnFolderClickListener onFolderClickListener) {
-        this.context = context;
-        this.folders = folders;
-        this.onFolderClickListener = onFolderClickListener;
+    public FolderAdapter(Context mcontext, List<VideoFiles> videoFiles, ArrayList<String> folderName) {
+        this.mcontext = mcontext;
+        this.videoFiles = videoFiles;
+        this.folderName = folderName;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.folder_item, parent, false);
-        return new ViewHolder(view);
+    public FolderAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mcontext).inflate(R.layout.folder_item, parent, false);
+        return new FolderAdapter.MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String folderName = folders.get(position);
-        holder.folderName.setText(folderName);
-        holder.itemView.setOnClickListener(v -> onFolderClickListener.onFolderClick(folderName));
+    public void onBindViewHolder(@NonNull FolderAdapter.MyHolder holder, int position) {
+        holder.folder.setText(folderName.get(position));
+
     }
 
     @Override
     public int getItemCount() {
-        return folders.size();
+        return folderName.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView folderName;
+    public static class MyHolder extends RecyclerView.ViewHolder {
+        TextView folder;
 
-        public ViewHolder(@NonNull View itemView) {
+        public MyHolder(@NonNull View itemView) {
             super(itemView);
-            folderName = itemView.findViewById(R.id.folder_name);
+            folder = itemView.findViewById(R.id.folder_name);
         }
     }
+
+
 }
