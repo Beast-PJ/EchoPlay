@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FilesFragment">
+    tools:context=".AudioPlayer.AudioFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/filesRV"
-        tools:listitem="@layout/video_item"/>
+        android:id="@+id/audioFolderRV"
+        tools:listitem="@layout/folder_item" />
+
 </FrameLayout>

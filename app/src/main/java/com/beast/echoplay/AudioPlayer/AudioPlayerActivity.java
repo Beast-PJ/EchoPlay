@@ -1,4 +1,6 @@
-package com.beast.echoplay;
+package com.beast.echoplay.AudioPlayer;
+
+import static com.beast.echoplay.AudioPlayer.AudioFolderAdapter.folderAudioFiles;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -10,15 +12,20 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.IOException;
+import com.beast.echoplay.R;
 
-public class PlayerActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.util.ArrayList;
+
+public class AudioPlayerActivity extends AppCompatActivity {
     private TextView songTitle, songArtist, songDuration;
     private ImageView albumArt, playPauseButton;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable updateSeekBar;
+    ArrayList<AudioFiles> myFiles = new ArrayList<>();
+    int postion;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,14 +39,14 @@ public class PlayerActivity extends AppCompatActivity {
         playPauseButton = findViewById(R.id.play_pause_button);
         seekBar = findViewById(R.id.seek_bar);
 
-        MediaItem mediaItem = (MediaItem) getIntent().getSerializableExtra("mediaItem");
+        postion = getIntent().getIntExtra("postion", -1);
+        myFiles = folderAudioFiles;
+        String path = myFiles.get(postion).getPath();
+        AudioFiles mediaItem = (AudioFiles) getIntent().getSerializableExtra("mediaItem");
         if (mediaItem != null) {
             songTitle.setText(mediaItem.getTitle());
             songArtist.setText(mediaItem.getArtist());
             songDuration.setText(mediaItem.getDuration());
-            // Load album art if available, otherwise set a default image
-            // ...
-
             initializeMediaPlayer(mediaItem.getPath());
         }
 

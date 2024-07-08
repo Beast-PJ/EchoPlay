@@ -1,7 +1,6 @@
-package com.beast.echoplay;
+package com.beast.echoplay.VideoPlayer;
 
-import static com.beast.echoplay.VideoAdapter.videoFiles;
-import static com.beast.echoplay.VideoFolderAdapter.foldervideoFiles;
+import static com.beast.echoplay.VideoPlayer.VideoFolderAdapter.foldervideoFiles;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.beast.echoplay.R;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -21,7 +21,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class VideoPlayerActivity extends AppCompatActivity {
     PlayerView playerView;
@@ -37,12 +36,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         playerView = findViewById(R.id.exoplayer);
         postion = getIntent().getIntExtra("postion", -1);
-        String sender = getIntent().getStringExtra("sender");
-        if (Objects.equals(sender, "FolderIsSending")) {
-            myFiles = foldervideoFiles;
-        } else {
-            myFiles = videoFiles;
-        }
+        myFiles = foldervideoFiles;
         String path = myFiles.get(postion).getPath();
         if (path != null) {
             Uri uri = Uri.parse(path);

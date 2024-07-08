@@ -18,16 +18,16 @@
         android:theme="@style/Theme.EchoPlay"
         tools:targetApi="31">
         <activity
-            android:name=".VideoFolderActivity"
+            android:name=".VideoPlayer.VideoFolderActivity"
             android:exported="false" />
         <activity
-            android:name=".FolderContentActivity"
+            android:name=".AudioPlayer.AudioFolderActivity"
             android:exported="false" />
         <activity
-            android:name=".VideoPlayerActivity"
+            android:name=".VideoPlayer.VideoPlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".PlayerActivity"
+            android:name=".AudioPlayer.AudioPlayerActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

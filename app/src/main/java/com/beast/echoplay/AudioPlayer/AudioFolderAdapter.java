@@ -1,4 +1,4 @@
-package com.beast.echoplay;
+package com.beast.echoplay.AudioPlayer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,41 +12,41 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.beast.echoplay.R;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder> {
+public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.MyViewHolder> {
+    static ArrayList<AudioFiles> folderAudioFiles;
     private final Context mContext;
-    static ArrayList<VideoFiles> videoFiles;
     View view;
-    public VideoAdapter(Context mContext, ArrayList<VideoFiles> videoFiles) {
-        this.mContext = mContext;
-        VideoAdapter.videoFiles = videoFiles;
-    }
 
+    public AudioFolderAdapter(Context mContext, ArrayList<AudioFiles> folderAudioFiles) {
+        this.mContext = mContext;
+        AudioFolderAdapter.folderAudioFiles = folderAudioFiles;
+    }
 
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        view = LayoutInflater.from(mContext).inflate(R.layout.video_item, parent, false);
+        view = LayoutInflater.from(mContext).inflate(R.layout.music_item, parent, false);
         return new MyViewHolder(view);
     }
 
     @SuppressLint("CheckResult")
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.fileName.setText(videoFiles.get(position).getTitle());
-        holder.videoDuration.setText(formatDuration(Long.parseLong(videoFiles.get(position).getDuration())));
-        Glide.with(mContext).load(new File(videoFiles.get(position).getPath())).into(holder.thumbnail);
+        holder.fileName.setText(folderAudioFiles.get(position).getTitle());
+        holder.audioDuration.setText(formatDuration(Long.parseLong(folderAudioFiles.get(position).getDuration())));
+        Glide.with(mContext).load(new File(folderAudioFiles.get(position).getPath())).into(holder.thumbnail);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, VideoPlayerActivity.class);
+                Intent intent = new Intent(mContext, AudioPlayerActivity.class);
                 intent.putExtra("postion", position);
-                intent.putExtra("sender", "FilesIsSending");
                 mContext.startActivity(intent);
             }
         });
@@ -55,9 +55,10 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        return videoFiles.size();
+        return folderAudioFiles.size();
     }
 
+    @SuppressLint("DefaultLocale")
     private String formatDuration(long duration) {
         duration = duration + 1;
         long minutes = (duration / 1000) / 60;
@@ -65,17 +66,16 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.MyViewHolder
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView thumbnail, menuMore;
-        TextView fileName, videoDuration;
+        ImageView thumbnail;
+        TextView fileName, audioDuration;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            thumbnail = itemView.findViewById(R.id.thumbnail);
-            menuMore = itemView.findViewById(R.id.menu_more);
-            fileName = itemView.findViewById(R.id.video_file_name);
-            videoDuration = itemView.findViewById(R.id.vid_duration);
+            thumbnail = itemView.findViewById(R.id.album_art);
+            fileName = itemView.findViewById(R.id.fileName);
+            audioDuration = itemView.findViewById(R.id.audioDuration);
         }
     }
 }

@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,19 +18,24 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.beast.echoplay.AudioPlayer.AudioFiles;
+import com.beast.echoplay.AudioPlayer.AudioFragment;
+import com.beast.echoplay.VideoPlayer.FolderAdapter;
+import com.beast.echoplay.VideoPlayer.FolderFragment;
+import com.beast.echoplay.VideoPlayer.VideoFiles;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 123;
     private FolderAdapter folderAdapter;
-    private HashMap<String, List<MediaItem>> mediaMap;
-    static ArrayList<VideoFiles> videoFiles = new ArrayList<>();
-    static ArrayList<String> folderList = new ArrayList<>();
+    public static ArrayList<VideoFiles> videoFiles = new ArrayList<>();
+    public static ArrayList<AudioFiles> audioFiles = new ArrayList<>();
+    public static ArrayList<String> videoFolderList = new ArrayList<>();
+    public static ArrayList<String> audioFolderList = new ArrayList<>();
+
     BottomNavigationView bottomNavigationView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -44,16 +48,14 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.folder_list) {
-                Toast.makeText(MainActivity.this, "Folder List", Toast.LENGTH_SHORT).show();
                 item.setChecked(true);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
                 fragmentTransaction.commit();
                 return true;
             }   if (item.getItemId() == R.id.files_list) {
-                Toast.makeText(MainActivity.this, "Files List", Toast.LENGTH_SHORT).show();
                 FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
-                fragmentTransaction2.replace(R.id.main_fragment, new FilesFragment());
+                fragmentTransaction2.replace(R.id.main_fragment, new AudioFragment());
                 fragmentTransaction2.commit();
                 item.setChecked(true);
                 return true;
@@ -77,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
         } else {
-            videoFiles =  getVideoFiles(this);
+            videoFiles = getVideoFiles(this);
+            audioFiles = getAudioFiles(this);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
             fragmentTransaction.commit();
@@ -90,7 +93,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                videoFiles =  getVideoFiles(this);
+                videoFiles = getVideoFiles(this);
+                audioFiles = getAudioFiles(this);
                 FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
                 fragmentTransaction.commit();
@@ -129,14 +133,57 @@ public class MainActivity extends AppCompatActivity {
                 int slashFirstIndex = path.lastIndexOf("/");
                 String subString = path.substring(0, slashFirstIndex);
 
-                if (!folderList.contains(subString)) {
-                    folderList.add(subString);
+                if (!videoFolderList.contains(subString)) {
+                    videoFolderList.add(subString);
                 }
                 tempvideoFiles.add(videoFiles);
             }
             cursor.close();
         }
         return tempvideoFiles;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<AudioFiles> getAudioFiles(Context context) {
+        ArrayList<AudioFiles> tempAudioFiles = new ArrayList<>();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Audio.Media.ARTIST
+        };
+        Cursor cursor2 = context.getContentResolver().query(uri, projection, null, null);
+        if (cursor2 != null) {
+            while (cursor2.moveToNext()) {
+
+                String id = cursor2.getString(0);
+                String path = cursor2.getString(1);
+                String title = cursor2.getString(2);
+                String size = cursor2.getString(3);
+                String dateAdded = cursor2.getString(4);
+                String duration = cursor2.getString(5);
+                String fileName = cursor2.getString(6);
+                String bucket = cursor2.getString(7);
+                String artist = cursor2.getString(8);
+
+                AudioFiles audioFiles = new AudioFiles(id, title, path, duration, artist);
+                int slashFirstIndex = path.lastIndexOf("/");
+                String subString = path.substring(0, slashFirstIndex);
+
+                if (!audioFolderList.contains(subString)) {
+                    audioFolderList.add(subString);
+                }
+                tempAudioFiles.add(audioFiles);
+            }
+            cursor2.close();
+        }
+        return tempAudioFiles;
     }
 
 

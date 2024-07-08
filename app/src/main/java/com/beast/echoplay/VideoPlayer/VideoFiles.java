@@ -1,15 +1,15 @@
-package com.beast.echoplay;
+package com.beast.echoplay.VideoPlayer;
 
 public class VideoFiles {
     private String id;
-    private String title;
-    private String fileName;
-    private String dateAdded;
-    private String size;
+    private final String title;
+    private final String fileName;
+    private final String dateAdded;
+    private final String size;
     private String path;
 
 
-    private String duration;
+    private final String duration;
 
     public VideoFiles(String id, String title, String fileName, String dateAdded, String size, String path, String duration) {
         this.id = id;
@@ -34,33 +34,20 @@ public class VideoFiles {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getFileName() {
         return fileName;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
 
     public String getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(String dateAdded) {
-        this.dateAdded = dateAdded;
-    }
 
     public String getSize() {
         return size;
     }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
 
     public String getPath() {
         return path;
@@ -74,7 +61,4 @@ public class VideoFiles {
         return duration;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
 }

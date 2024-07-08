@@ -25,13 +25,13 @@
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
-            android:id="@+id/song_name"
+            android:id="@+id/fileName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Name"
-            android:layout_marginLeft="9dp"
+            android:layout_marginStart="9dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/album_art"
@@ -49,12 +49,12 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/album_art"
-            app:layout_constraintEnd_toStartOf="@+id/duration"
+            app:layout_constraintEnd_toStartOf="@+id/audioDuration"
             app:layout_constraintHorizontal_bias="0.003"
             app:layout_constraintWidth_percent="0.7"/>
 
         <TextView
-            android:id="@+id/duration"
+            android:id="@+id/audioDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="03:00"

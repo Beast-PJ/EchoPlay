@@ -1,4 +1,4 @@
-package com.beast.echoplay;
+package com.beast.echoplay.AudioPlayer;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,46 +12,49 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.beast.echoplay.R;
+
 import java.util.ArrayList;
 
-public class VideoFolderActivity extends AppCompatActivity {
+public class AudioFolderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
-    VideoFolderAdapter videoFolderAdapter;
+    AudioFolderAdapter audioFolderAdapter;
     String myFolderName;
-    ArrayList<VideoFiles> videoFilesArrayList = new ArrayList<>();
+    ArrayList<AudioFiles> audioFilesArrayList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_video_folder);
-        recyclerView = findViewById(R.id.FolderVideoRV);
+        setContentView(R.layout.activity_audio_folder);
+        recyclerView = findViewById(R.id.FolderAudioRV);
         myFolderName = getIntent().getStringExtra("folderName");
         if (myFolderName != null) {
-            videoFilesArrayList = getVideoFiles(this, myFolderName);
+            audioFilesArrayList = getAudioFiles(this, myFolderName);
         }
-        if (videoFilesArrayList.size() > 0) {
-            videoFolderAdapter = new VideoFolderAdapter(this, videoFilesArrayList);
-            recyclerView.setAdapter(videoFolderAdapter);
+        if (audioFilesArrayList.size() > 0) {
+            audioFolderAdapter = new AudioFolderAdapter(this, audioFilesArrayList);
+            recyclerView.setAdapter(audioFolderAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<VideoFiles> getVideoFiles(Context context, String folderName) {
-        ArrayList<VideoFiles> tempvideoFiles = new ArrayList<>();
-        Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+    public ArrayList<AudioFiles> getAudioFiles(Context context, String folderName) {
+        ArrayList<AudioFiles> tempAudioFiles = new ArrayList<>();
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
-                MediaStore.Video.Media._ID,
-                MediaStore.Video.Media.DATA,
-                MediaStore.Video.Media.TITLE,
-                MediaStore.Video.Media.SIZE,
-                MediaStore.Video.Media.DATE_ADDED,
-                MediaStore.Video.Media.DURATION,
-                MediaStore.Video.Media.DISPLAY_NAME,
-                MediaStore.Video.Media.BUCKET_DISPLAY_NAME
+                MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.TITLE,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DATE_ADDED,
+                MediaStore.Audio.Media.DURATION,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.BUCKET_DISPLAY_NAME,
+                MediaStore.Audio.Media.ARTIST
         };
-        String selection = MediaStore.Video.Media.DATA + " like?";
+        String selection = MediaStore.Audio.Media.DATA + " like?";
         String[] selectionArgs = new String[]{"%" + folderName + "%"};
         Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
         if (cursor != null) {
@@ -65,14 +68,15 @@ public class VideoFolderActivity extends AppCompatActivity {
                 String duration = cursor.getString(5);
                 String fileName = cursor.getString(6);
                 String bucket = cursor.getString(7);
+                String artist = cursor.getString(8);
 
-                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path, duration);
+                AudioFiles AudioFiles = new AudioFiles(id, title, path, duration, artist);
                 if (folderName.endsWith(bucket)) {
-                    tempvideoFiles.add(videoFiles);
+                    tempAudioFiles.add(AudioFiles);
                 }
             }
             cursor.close();
         }
-        return tempvideoFiles;
+        return tempAudioFiles;
     }
 }

@@ -1,4 +1,4 @@
-package com.beast.echoplay;
+package com.beast.echoplay.VideoPlayer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,13 +12,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.beast.echoplay.R;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
 
 public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.MyViewHolder> {
-    static ArrayList<VideoFiles> foldervideoFiles;
+    public static ArrayList<VideoFiles> foldervideoFiles;
     private final Context mContext;
     View view;
 
@@ -46,7 +47,6 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, VideoPlayerActivity.class);
                 intent.putExtra("postion", position);
-                intent.putExtra("sender", "FolderIsSending");
                 mContext.startActivity(intent);
             }
         });

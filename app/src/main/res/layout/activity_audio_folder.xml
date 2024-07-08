@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient1"
     android:orientation="vertical"
-    tools:context=".FolderContentActivity">
+    tools:context=".AudioPlayer.AudioFolderActivity">
 
     <RelativeLayout
         android:id="@+id/titlebar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
 
         <TextView
             android:id="@+id/page_title"
@@ -20,7 +21,7 @@
             android:text="@string/app_name"
             android:textColor="@color/white"
             android:textSize="32sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/menu_btn"
@@ -32,24 +33,27 @@
             android:contentDescription="TODO"
             android:padding="10dp"
             android:src="@drawable/menu"
-            tools:ignore="TouchTargetSizeCheck"/>
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <Switch
+            android:id="@+id/night_mode_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/menu_btn"
+            android:padding="10dp"
+            android:text="Night Mode"
+            android:textColor="@color/white"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     </RelativeLayout>
 
-    <Switch
-        android:id="@+id/night_mode_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Night Mode"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        tools:ignore="UseSwitchCompatOrMaterialXml" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewMedia"
+        android:id="@+id/FolderAudioRV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/music_item"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"/>
-</LinearLayout>
+        android:layout_below="@id/titlebar"
+        tools:listitem="@layout/video_item" />
+
+
+</RelativeLayout>

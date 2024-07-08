@@ -1,4 +1,4 @@
-package com.beast.echoplay;
+package com.beast.echoplay.AudioPlayer;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,29 +11,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.beast.echoplay.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyHolder> {
     private final Context mcontext;
-    private final List<VideoFiles> videoFiles;
+    private final List<AudioFiles> audioFiles;
     private final ArrayList<String> folderName;
 
-    public FolderAdapter(Context mcontext, List<VideoFiles> videoFiles, ArrayList<String> folderName) {
+    public FolderAdapter(Context mcontext, List<AudioFiles> audioFiles, ArrayList<String> folderName) {
         this.mcontext = mcontext;
-        this.videoFiles = videoFiles;
+        this.audioFiles = audioFiles;
         this.folderName = folderName;
     }
 
     @NonNull
     @Override
-    public FolderAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mcontext).inflate(R.layout.folder_item, parent, false);
-        return new FolderAdapter.MyHolder(view);
+        return new MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FolderAdapter.MyHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull MyHolder holder, @SuppressLint("RecyclerView") int position) {
         int index = folderName.get(position).lastIndexOf("/");
         String folder = folderName.get(position).substring(index + 1);
         holder.folder.setText(folder);
@@ -41,7 +43,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mcontext, VideoFolderActivity.class);
+                Intent intent = new Intent(mcontext, AudioFolderActivity.class);
                 intent.putExtra("folderName", folderName.get(position));
                 mcontext.startActivity(intent);
             }
@@ -56,8 +58,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyHolder> 
 
     public int NumberOfFiles(String folderName) {
         int count_files = 0;
-        for (VideoFiles videoFiles : videoFiles) {
-            if (videoFiles.getPath().substring(0, videoFiles.getPath().lastIndexOf("/")).endsWith(folderName)) {
+        for (AudioFiles audioFiles : audioFiles) {
+            if (audioFiles.getPath().substring(0, audioFiles.getPath().lastIndexOf("/")).endsWith(folderName)) {
                 count_files++;
             }
         }
