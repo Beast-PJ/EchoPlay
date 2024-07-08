@@ -8,13 +8,17 @@ public class VideoFiles {
     private String size;
     private String path;
 
-    public VideoFiles(String id, String title, String fileName, String dateAdded, String size, String path) {
+
+    private String duration;
+
+    public VideoFiles(String id, String title, String fileName, String dateAdded, String size, String path, String duration) {
         this.id = id;
         this.title = title;
         this.fileName = fileName;
         this.dateAdded = dateAdded;
         this.size = size;
         this.path = path;
+        this.duration = duration;
     }
 
 
@@ -64,5 +68,13 @@ public class VideoFiles {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }

@@ -66,7 +66,7 @@ public class VideoFolderActivity extends AppCompatActivity {
                 String fileName = cursor.getString(6);
                 String bucket = cursor.getString(7);
 
-                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path);
+                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path, duration);
                 if (folderName.endsWith(bucket)) {
                     tempvideoFiles.add(videoFiles);
                 }

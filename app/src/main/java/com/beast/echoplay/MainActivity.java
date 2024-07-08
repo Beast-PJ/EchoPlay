@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 String duration = cursor.getString(5);
                 String fileName = cursor.getString(6);
 
-                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path);
+                VideoFiles videoFiles = new VideoFiles(id, title, fileName, dateAdded, size, path, duration);
                 int slashFirstIndex = path.lastIndexOf("/");
                 String subString = path.substring(0, slashFirstIndex);
 

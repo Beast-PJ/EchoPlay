@@ -39,7 +39,7 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.fileName.setText(foldervideoFiles.get(position).getTitle());
-        holder.videoDuration.setText(foldervideoFiles.get(position).getSize());
+        holder.videoDuration.setText(formatDuration(Long.parseLong(foldervideoFiles.get(position).getDuration())));
         Glide.with(mContext).load(new File(foldervideoFiles.get(position).getPath())).into(holder.thumbnail);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,5 +70,13 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
             fileName = itemView.findViewById(R.id.video_file_name);
             videoDuration = itemView.findViewById(R.id.vid_duration);
         }
+    }
+
+    @SuppressLint("DefaultLocale")
+    private String formatDuration(long duration) {
+        duration = duration + 1;
+        long minutes = (duration / 1000) / 60;
+        long seconds = (duration / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 }
