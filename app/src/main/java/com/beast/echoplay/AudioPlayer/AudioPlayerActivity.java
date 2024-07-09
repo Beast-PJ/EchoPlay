@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 public class AudioPlayerActivity extends AppCompatActivity {
     private TextView songTitle, songArtist, songDuration;
-    private ImageView albumArt, playPauseButton;
+    int position;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
     private final Handler handler = new Handler();
     private Runnable updateSeekBar;
     ArrayList<AudioFiles> myFiles = new ArrayList<>();
-    int postion;
+    private ImageView albumArt, playPauseButton, prevButton, nextButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,18 +37,24 @@ public class AudioPlayerActivity extends AppCompatActivity {
         songDuration = findViewById(R.id.totalTime);
         albumArt = findViewById(R.id.coverArt);
         playPauseButton = findViewById(R.id.play_pause_button);
+        prevButton = findViewById(R.id.previous_button);
+        nextButton = findViewById(R.id.next_button);
         seekBar = findViewById(R.id.seek_bar);
 
-        postion = getIntent().getIntExtra("postion", -1);
+        position = getIntent().getIntExtra("postion", -1);
         myFiles = folderAudioFiles;
-        String path = myFiles.get(postion).getPath();
+        String path = myFiles.get(position).getPath();
         AudioFiles mediaItem = (AudioFiles) getIntent().getSerializableExtra("mediaItem");
-        if (mediaItem != null) {
-            songTitle.setText(mediaItem.getTitle());
-            songArtist.setText(mediaItem.getArtist());
-            songDuration.setText(mediaItem.getDuration());
-            initializeMediaPlayer(mediaItem.getPath());
+        if (path != null) {
+            songTitle.setText(folderAudioFiles.get(position).getTitle());
+            songArtist.setText(folderAudioFiles.get(position).getArtist());
+            songDuration.setText(folderAudioFiles.get(position).getDuration());
+            initializeMediaPlayer(path);
         }
+
+        nextButton.setOnClickListener(v -> playNextSong());
+
+        prevButton.setOnClickListener(v -> playPreviousSong());
 
         playPauseButton.setOnClickListener(v -> {
             if (mediaPlayer.isPlaying()) {
@@ -93,12 +99,51 @@ public class AudioPlayerActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) { }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
         mediaPlayer.setOnCompletionListener(mp -> playPauseButton.setImageResource(R.drawable.play));
+    }
+
+    public void playNextSong() {
+        if (position < folderAudioFiles.size() - 1) {
+            position++;
+            setupMediaPlayer();
+            updateUI();
+        }
+    }
+
+    public void playPreviousSong() {
+        if (position > 0) {
+            position--;
+            setupMediaPlayer();
+            updateUI();
+        }
+    }
+
+    private void setupMediaPlayer() {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(folderAudioFiles.get(position).getPath());
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateUI() {
+        AudioFiles currentSong = folderAudioFiles.get(position);
+        songTitle.setText(currentSong.getTitle());
+        songArtist.setText(currentSong.getArtist());
+        playPauseButton.setImageResource(mediaPlayer.isPlaying() ? R.drawable.pause : R.drawable.play);
     }
 
     @Override

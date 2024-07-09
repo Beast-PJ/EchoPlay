@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/folder_list"
-        android:title="Folder"
-        android:icon="@drawable/folder"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/videos"
+        android:title="Video"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/files_list"
-        android:title="Files"
-        android:icon="@drawable/filter"
-        app:showAsAction="ifRoom"/>
+        android:icon="@drawable/music_note"
+        android:title="Music"
+        app:showAsAction="ifRoom" />
 </menu>

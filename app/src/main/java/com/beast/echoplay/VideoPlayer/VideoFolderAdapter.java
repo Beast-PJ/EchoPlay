@@ -66,7 +66,6 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             thumbnail = itemView.findViewById(R.id.thumbnail);
-            menuMore = itemView.findViewById(R.id.menu_more);
             fileName = itemView.findViewById(R.id.video_file_name);
             videoDuration = itemView.findViewById(R.id.vid_duration);
         }
