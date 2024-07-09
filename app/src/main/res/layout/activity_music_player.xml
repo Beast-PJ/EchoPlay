@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/mtrl_textinput_default_box_stroke_color"
+    android:background="@drawable/background_drw"
     android:paddingVertical="50dp"
     tools:ignore="PrivateResource">
     <androidx.cardview.widget.CardView
@@ -24,6 +24,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:id="@+id/coverArt"
+        android:src="@drawable/music_note"
         android:layout_gravity="center_horizontal"/>
     </androidx.cardview.widget.CardView>
     <TextView
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:text="Song Title"
         android:textSize="24sp"
+        android:textColor="@color/black"
         android:layout_marginTop="24dp"
         android:layout_marginHorizontal="40dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Artist"
+        android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@id/song_title"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,27 +57,31 @@
     <TextView
         android:id="@+id/currentTime"
         android:text="00:00"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/totalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="03:00"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/artist_name"
-        tools:ignore="NotSibling" />
+        <TextView
+            android:id="@+id/totalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="03:00"
+            android:textColor="@color/black"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/artist_name"
+            tools:ignore="NotSibling" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <SeekBar
         android:id="@+id/seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         app:layout_constraintTop_toBottomOf="@id/artist_name"
         app:layout_constraintStart_toEndOf="@id/currentTime"
         app:layout_constraintEnd_toStartOf="@id/totalTime"
