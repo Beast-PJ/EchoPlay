@@ -28,7 +28,6 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
         AudioFolderAdapter.folderAudioFiles = folderAudioFiles;
     }
 
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,11 +45,10 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, AudioPlayerActivity.class);
-                intent.putExtra("postion", position);
+                intent.putExtra("position", position);  // corrected key here
                 mContext.startActivity(intent);
             }
         });
-
     }
 
     @Override

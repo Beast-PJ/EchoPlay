@@ -2,6 +2,7 @@ package com.beast.echoplay.AudioPlayer;
 
 import static com.beast.echoplay.AudioPlayer.AudioFolderAdapter.folderAudioFiles;
 
+import android.annotation.SuppressLint;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class AudioPlayerActivity extends AppCompatActivity {
-    private TextView songTitle, songArtist, songDuration;
+    private TextView songTitle, songArtist, songDuration, songCurrentTime;
     int position;
     private SeekBar seekBar;
     private MediaPlayer mediaPlayer;
@@ -35,25 +36,21 @@ public class AudioPlayerActivity extends AppCompatActivity {
         songTitle = findViewById(R.id.song_title);
         songArtist = findViewById(R.id.artist_name);
         songDuration = findViewById(R.id.totalTime);
+        songCurrentTime = findViewById(R.id.currentTime);
         albumArt = findViewById(R.id.coverArt);
         playPauseButton = findViewById(R.id.play_pause_button);
         prevButton = findViewById(R.id.previous_button);
         nextButton = findViewById(R.id.next_button);
         seekBar = findViewById(R.id.seek_bar);
 
-        position = getIntent().getIntExtra("postion", -1);
+        position = getIntent().getIntExtra("position", -1);
         myFiles = folderAudioFiles;
-        String path = myFiles.get(position).getPath();
-        AudioFiles mediaItem = (AudioFiles) getIntent().getSerializableExtra("mediaItem");
-        if (path != null) {
-            songTitle.setText(folderAudioFiles.get(position).getTitle());
-            songArtist.setText(folderAudioFiles.get(position).getArtist());
-            songDuration.setText(folderAudioFiles.get(position).getDuration());
-            initializeMediaPlayer(path);
+
+        if (position != -1) {
+            playAudio(position);
         }
 
         nextButton.setOnClickListener(v -> playNextSong());
-
         prevButton.setOnClickListener(v -> playPreviousSong());
 
         playPauseButton.setOnClickListener(v -> {
@@ -63,87 +60,91 @@ public class AudioPlayerActivity extends AppCompatActivity {
             } else {
                 mediaPlayer.start();
                 playPauseButton.setImageResource(R.drawable.pause);
+                handler.post(updateSeekBar); // Ensure the seek bar updates are resumed
             }
         });
-
-        updateSeekBar = new Runnable() {
-            @Override
-            public void run() {
-                if (mediaPlayer != null) {
-                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-    }
-
-    private void initializeMediaPlayer(String path) {
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(path);
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            playPauseButton.setImageResource(R.drawable.pause);
-            seekBar.setMax(mediaPlayer.getDuration());
-            handler.post(updateSeekBar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     mediaPlayer.seekTo(progress);
+                    songCurrentTime.setText(formatDuration(progress));
                 }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                handler.removeCallbacks(updateSeekBar);
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+                handler.post(updateSeekBar); // Resume the seek bar updates after seeking
             }
         });
-        mediaPlayer.setOnCompletionListener(mp -> playPauseButton.setImageResource(R.drawable.play));
+
+        updateSeekBar = new Runnable() {
+            @Override
+            public void run() {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
+                    songCurrentTime.setText(formatDuration(mediaPlayer.getCurrentPosition()));
+                    handler.postDelayed(this, 1000); // Update every second
+                }
+            }
+        };
+    }
+
+    private void playAudio(int position) {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+
+        AudioFiles mediaItem = myFiles.get(position);
+        songTitle.setText(mediaItem.getTitle());
+        songArtist.setText(mediaItem.getArtist());
+        songDuration.setText(formatDuration(Long.parseLong(mediaItem.getDuration())));
+
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(mediaItem.getPath());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            playPauseButton.setImageResource(R.drawable.pause);
+            seekBar.setMax(mediaPlayer.getDuration());
+            handler.post(updateSeekBar); // Start the seek bar update runnable
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.setOnCompletionListener(mp -> {
+            playPauseButton.setImageResource(R.drawable.play);
+            playNextSong();
+        });
     }
 
     public void playNextSong() {
-        if (position < folderAudioFiles.size() - 1) {
+        if (position < myFiles.size() - 1) {
             position++;
-            setupMediaPlayer();
-            updateUI();
+            playAudio(position);
         }
     }
 
     public void playPreviousSong() {
         if (position > 0) {
             position--;
-            setupMediaPlayer();
-            updateUI();
+            playAudio(position);
         }
     }
 
-    private void setupMediaPlayer() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(folderAudioFiles.get(position).getPath());
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateUI() {
-        AudioFiles currentSong = folderAudioFiles.get(position);
-        songTitle.setText(currentSong.getTitle());
-        songArtist.setText(currentSong.getArtist());
-        playPauseButton.setImageResource(mediaPlayer.isPlaying() ? R.drawable.pause : R.drawable.play);
+    @SuppressLint("DefaultLocale")
+    private String formatDuration(long duration) {
+        duration = duration + 1;
+        long minutes = (duration / 1000) / 60;
+        long seconds = (duration / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
     @Override
