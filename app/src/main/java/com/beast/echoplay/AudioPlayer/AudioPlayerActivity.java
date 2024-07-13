@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -116,7 +117,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
             seekBar.setMax(mediaPlayer.getDuration());
             handler.post(updateSeekBar); // Start the seek bar update runnable
         } catch (IOException e) {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
         }
 
         mediaPlayer.setOnCompletionListener(mp -> {
@@ -141,7 +142,6 @@ public class AudioPlayerActivity extends AppCompatActivity {
 
     @SuppressLint("DefaultLocale")
     private String formatDuration(long duration) {
-        duration = duration + 1;
         long minutes = (duration / 1000) / 60;
         long seconds = (duration / 1000) % 60;
         return String.format("%02d:%02d", minutes, seconds);
