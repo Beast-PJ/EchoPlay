@@ -2,8 +2,17 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.EchoPlay" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+         <item name="colorPrimary">#0246CD</item>
     </style>
 
     <style name="Theme.EchoPlay" parent="Base.Theme.EchoPlay" />
+
+    <style name="Theme.EchoPlay.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.EchoPlay.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.EchoPlay.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

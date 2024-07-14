@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,6 +95,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
                 }
             }
         };
+        updateSeekBar.run();
     }
 
     private void playAudio(int position) {
@@ -117,7 +117,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
             seekBar.setMax(mediaPlayer.getDuration());
             handler.post(updateSeekBar); // Start the seek bar update runnable
         } catch (IOException e) {
-            Toast.makeText(getApplicationContext(), (CharSequence) e, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
 
         mediaPlayer.setOnCompletionListener(mp -> {

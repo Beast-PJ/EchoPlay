@@ -2,13 +2,18 @@ package com.beast.echoplay;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -35,14 +40,31 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<AudioFiles> audioFiles = new ArrayList<>();
     public static ArrayList<String> videoFolderList = new ArrayList<>();
     public static ArrayList<String> audioFolderList = new ArrayList<>();
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+    boolean isNightMode;
+
 
     BottomNavigationView bottomNavigationView;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        isNightMode = sharedPreferences.getBoolean("NightMode", false);
+//        if (isNightMode) {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//        } else {
+//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//        }
+
         bottomNavigationView = findViewById(R.id.navigation_bar);
         permission();
 
@@ -53,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.main_fragment, new FolderFragment());
                 fragmentTransaction.commit();
                 return true;
-            }   if (item.getItemId() == R.id.files_list) {
+            }
+            if (item.getItemId() == R.id.files_list) {
                 FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
                 fragmentTransaction2.replace(R.id.main_fragment, new AudioFragment());
                 fragmentTransaction2.commit();
@@ -62,15 +85,29 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        Switch nightModeSwitch = findViewById(R.id.night_mode_switch);
-        nightModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        });
-
+        ImageButton nightMode = findViewById(R.id.night_mode_switch);
+        nightMode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Check the current state of night mode
+                    if (isNightMode) {
+                        // If night mode is currently on, turn it off
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        editor.putBoolean("NightMode", false);
+                        // Change the ImageButton to day mode icon
+                        nightMode.setImageResource(R.drawable.ic_day_mode);  // Set to your day mode image resource
+                        isNightMode = false;
+                    } else {
+                        // If night mode is currently off, turn it on
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        editor.putBoolean("NightMode", true);
+                        // Change the ImageButton to night mode icon
+                        nightMode.setImageResource(R.drawable.ic_night_mode);  // Set to your night mode image resource
+                        isNightMode = true;
+                    }
+                    editor.apply();  // Apply changes to shared preferences
+                }
+            });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
