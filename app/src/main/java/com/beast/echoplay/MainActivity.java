@@ -11,9 +11,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -25,7 +22,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.beast.echoplay.AudioPlayer.AudioFiles;
 import com.beast.echoplay.AudioPlayer.AudioFragment;
-import com.beast.echoplay.VideoPlayer.FolderAdapter;
 import com.beast.echoplay.VideoPlayer.FolderFragment;
 import com.beast.echoplay.VideoPlayer.VideoFiles;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,12 +31,10 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PERMISSION = 123;
-    private FolderAdapter folderAdapter;
     public static ArrayList<VideoFiles> videoFiles = new ArrayList<>();
     public static ArrayList<AudioFiles> audioFiles = new ArrayList<>();
     public static ArrayList<String> videoFolderList = new ArrayList<>();
     public static ArrayList<String> audioFolderList = new ArrayList<>();
-    private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
     boolean isNightMode;
@@ -48,14 +42,14 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 //        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
         isNightMode = sharedPreferences.getBoolean("NightMode", false);
@@ -89,32 +83,27 @@ public class MainActivity extends AppCompatActivity {
         nightMode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Check the current state of night mode
                     if (isNightMode) {
-                        // If night mode is currently on, turn it off
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                         editor.putBoolean("NightMode", false);
-                        // Change the ImageButton to day mode icon
-                        nightMode.setImageResource(R.drawable.ic_day_mode);  // Set to your day mode image resource
+                        nightMode.setImageResource(R.drawable.ic_day_mode);
                         isNightMode = false;
                     } else {
-                        // If night mode is currently off, turn it on
                         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                         editor.putBoolean("NightMode", true);
-                        // Change the ImageButton to night mode icon
-                        nightMode.setImageResource(R.drawable.ic_night_mode);  // Set to your night mode image resource
+                        nightMode.setImageResource(R.drawable.ic_night_mode);
                         isNightMode = true;
                     }
-                    editor.apply();  // Apply changes to shared preferences
+                    editor.apply();
                 }
             });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.P)
     private void permission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK}, REQUEST_PERMISSION);
         } else {
             videoFiles = getVideoFiles(this);
             audioFiles = getAudioFiles(this);

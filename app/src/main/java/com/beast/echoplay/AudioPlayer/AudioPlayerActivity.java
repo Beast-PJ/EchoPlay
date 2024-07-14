@@ -3,6 +3,9 @@ package com.beast.echoplay.AudioPlayer;
 import static com.beast.echoplay.AudioPlayer.AudioFolderAdapter.folderAudioFiles;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,11 +60,13 @@ public class AudioPlayerActivity extends AppCompatActivity {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.pause();
                 playPauseButton.setImageResource(R.drawable.play);
+
             } else {
                 mediaPlayer.start();
                 playPauseButton.setImageResource(R.drawable.pause);
                 handler.post(updateSeekBar); // Ensure the seek bar updates are resumed
             }
+
         });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -99,6 +104,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
     }
 
     private void playAudio(int position) {
+
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
@@ -107,6 +113,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
         songTitle.setText(mediaItem.getTitle());
         songArtist.setText(mediaItem.getArtist());
         songDuration.setText(formatDuration(Long.parseLong(mediaItem.getDuration())));
+        songTitle.setSelected(true);
+        loadCoverArt(mediaItem.getPath());
 
         mediaPlayer = new MediaPlayer();
         try {
@@ -145,6 +153,18 @@ public class AudioPlayerActivity extends AppCompatActivity {
         long minutes = (duration / 1000) / 60;
         long seconds = (duration / 1000) % 60;
         return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    private void loadCoverArt(String path) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(path);
+        byte[] art = retriever.getEmbeddedPicture();
+        if (art != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            albumArt.setImageBitmap(bitmap);
+        } else {
+            albumArt.setImageResource(R.drawable.music_note);
+        }
     }
 
     @Override
