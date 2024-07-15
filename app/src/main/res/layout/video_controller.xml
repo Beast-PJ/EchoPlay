@@ -4,7 +4,6 @@
     android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
     android:gravity="center_horizontal">
 
     <LinearLayout
@@ -12,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
         android:gravity="center"
         android:visibility="visible"
         android:orientation="horizontal">
@@ -24,7 +24,7 @@
             android:src="@drawable/back" />
 
         <TextView
-            android:id="@+id/video_title"
+            android:id="@+id/video_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -77,11 +77,12 @@
             android:src="@drawable/rewind" />
 
         <ImageView
-            android:id="@+id/exo_prev"
+            android:id="@+id/prev"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:contentDescription="prev"
             android:src="@drawable/previous" />
 
         <ImageView
@@ -100,11 +101,12 @@
             android:src="@drawable/play" />
 
         <ImageView
-            android:id="@+id/exo_next"
+            android:id="@+id/next"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
+            android:contentDescription="next"
             android:src="@drawable/next" />
 
         <ImageView

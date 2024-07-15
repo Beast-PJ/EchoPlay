@@ -74,8 +74,12 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
     @SuppressLint("DefaultLocale")
     private String formatDuration(long duration) {
         duration = duration + 1;
+        long hours = (duration / 3600000);
         long minutes = (duration / 1000) / 60;
         long seconds = (duration / 1000) % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        if (hours > 0)
+            return String.format("%02:%02d:%02d", hours, minutes, seconds);
+        else
+            return String.format("%02d:%02d", minutes, seconds);
     }
 }

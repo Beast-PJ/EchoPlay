@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.beast.echoplay.R;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class VideoFolderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     VideoFolderAdapter videoFolderAdapter;
+    TextView pageTitle;
     String myFolderName;
     ArrayList<VideoFiles> videoFilesArrayList = new ArrayList<>();
 
@@ -28,7 +31,12 @@ public class VideoFolderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_folder);
         recyclerView = findViewById(R.id.FolderVideoRV);
+        pageTitle = findViewById(R.id.page_title);
         myFolderName = getIntent().getStringExtra("folderName");
+        File file = new File(myFolderName);
+        String currentFolder = file.getName();
+        pageTitle.setText(currentFolder);
+
         if (myFolderName != null) {
             videoFilesArrayList = getVideoFiles(this, myFolderName);
         }
