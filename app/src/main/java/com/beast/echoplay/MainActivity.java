@@ -1,6 +1,7 @@
 package com.beast.echoplay;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.beast.echoplay.AudioPlayer.AudioFiles;
 import com.beast.echoplay.AudioPlayer.AudioFragment;
@@ -36,12 +38,14 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> videoFolderList = new ArrayList<>();
     public static ArrayList<String> audioFolderList = new ArrayList<>();
     private SharedPreferences.Editor editor;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     boolean isNightMode;
 
 
     BottomNavigationView bottomNavigationView;
 
+    @SuppressLint("MissingInflatedId")
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,17 @@ public class MainActivity extends AppCompatActivity {
 //        }
 
         bottomNavigationView = findViewById(R.id.navigation_bar);
+        swipeRefreshLayout = findViewById(R.id.swipe_refesh_layout);
         permission();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                videoFiles = getVideoFiles(getApplicationContext());
+                audioFiles = getAudioFiles(getApplicationContext());
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.folder_list) {
@@ -81,22 +95,22 @@ public class MainActivity extends AppCompatActivity {
         });
         ImageButton nightMode = findViewById(R.id.night_mode_switch);
         nightMode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isNightMode) {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        editor.putBoolean("NightMode", false);
-                        nightMode.setImageResource(R.drawable.ic_day_mode);
-                        isNightMode = false;
-                    } else {
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        editor.putBoolean("NightMode", true);
-                        nightMode.setImageResource(R.drawable.ic_night_mode);
-                        isNightMode = true;
-                    }
-                    editor.apply();
+            @Override
+            public void onClick(View v) {
+                if (isNightMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor.putBoolean("NightMode", false);
+                    nightMode.setImageResource(R.drawable.ic_day_mode);
+                    isNightMode = false;
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor.putBoolean("NightMode", true);
+                    nightMode.setImageResource(R.drawable.ic_night_mode);
+                    isNightMode = true;
                 }
-            });
+                editor.apply();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
