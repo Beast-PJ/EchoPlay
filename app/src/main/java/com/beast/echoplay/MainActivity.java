@@ -49,19 +49,19 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-
+        ImageButton nightMode = findViewById(R.id.night_mode_switch);
         isNightMode = sharedPreferences.getBoolean("NightMode", false);
-//        if (isNightMode) {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-//        } else {
-//            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-//        }
+        if (isNightMode) {
+            nightMode.setImageResource(R.drawable.ic_night_mode);
+        } else {
+            nightMode.setImageResource(R.drawable.ic_day_mode);
+        }
+
 
         bottomNavigationView = findViewById(R.id.navigation_bar);
         swipeRefreshLayout = findViewById(R.id.swipe_refesh_layout);
@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        ImageButton nightMode = findViewById(R.id.night_mode_switch);
         nightMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
