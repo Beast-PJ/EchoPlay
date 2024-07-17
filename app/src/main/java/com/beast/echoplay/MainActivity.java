@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        nightMode = findViewById(R.id.night_mode_switch);
         isNightMode = sharedPreferences.getBoolean("NightMode", false);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        nightMode = findViewById(R.id.night_mode_switch);
         if (isNightMode) {
             nightMode.setImageResource(R.drawable.ic_night_mode);
         } else {
