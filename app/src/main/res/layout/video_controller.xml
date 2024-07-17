@@ -25,14 +25,14 @@
 
         <TextView
             android:id="@+id/video_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="Video Text"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18dp" />
 
         <ImageButton
             android:id="@+id/video_list"

@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<String> videoFolderList = new ArrayList<>();
     public static ArrayList<String> audioFolderList = new ArrayList<>();
     private SharedPreferences.Editor editor;
+    ImageButton nightMode, menuBtn;
     SwipeRefreshLayout swipeRefreshLayout;
 
     boolean isNightMode;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SharedPreferences sharedPreferences = getSharedPreferences("preferences", MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        ImageButton nightMode = findViewById(R.id.night_mode_switch);
+        nightMode = findViewById(R.id.night_mode_switch);
         isNightMode = sharedPreferences.getBoolean("NightMode", false);
         if (isNightMode) {
             nightMode.setImageResource(R.drawable.ic_night_mode);
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.navigation_bar);
         swipeRefreshLayout = findViewById(R.id.swipe_refesh_layout);
         permission();
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

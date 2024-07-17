@@ -2,7 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.EchoPlay" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">#0246CD</item>
+        <item name="colorPrimary">#0246CD</item>
+    </style>
+
+    <style name="BottomSheetTheme" parent="Theme.Design.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="background">@android:color/transparent</item>
     </style>
 
     <style name="Theme.EchoPlay" parent="Base.Theme.EchoPlay" />

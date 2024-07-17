@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.beast.echoplay.R;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.MyViewHolder> {
     public static ArrayList<VideoFiles> foldervideoFiles;
     private final Context mContext;
+    BottomSheetDialog bottomSheetDialog;
     View view;
 
     public VideoFolderAdapter(Context mContext, ArrayList<VideoFiles> foldervideoFiles) {
@@ -50,6 +52,22 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
                 mContext.startActivity(intent);
             }
         });
+        holder.menuMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetTheme);
+                View bsView = LayoutInflater.from(mContext).inflate(R.layout.video_bs_layout, v.findViewById(R.id.bottom_sheet));
+                bsView.findViewById(R.id.bs_play).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.itemView.performClick();
+                        bottomSheetDialog.dismiss();
+                    }
+                });
+                bottomSheetDialog.setContentView(bsView);
+                bottomSheetDialog.show();
+            }
+        });
 
     }
 
@@ -59,7 +77,6 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-
         ImageView thumbnail, menuMore;
         TextView fileName, videoDuration;
 
@@ -68,6 +85,7 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
             thumbnail = itemView.findViewById(R.id.thumbnail);
             fileName = itemView.findViewById(R.id.video_file_name);
             videoDuration = itemView.findViewById(R.id.vid_duration);
+            menuMore = itemView.findViewById(R.id.more);
         }
     }
 
