@@ -1,7 +1,27 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:id="@+id/action_night_mode"
-        android:title="Toggle Night Mode"
+        android:id="@+id/search_video"
+        android:icon="@drawable/search"
+        android:title="Search"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/night_mode_switch"
+        android:icon="@drawable/ic_day_mode"
+        android:title="Night Mode"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/layout_btn"
+        android:icon="@drawable/more"
+        android:title="Layout"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by"
+        android:title="Sort By"
+        app:showAsAction="never" />
+
 </menu>

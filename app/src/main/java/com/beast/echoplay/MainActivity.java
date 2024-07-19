@@ -10,8 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     ImageButton nightMode, menuBtn;
     SwipeRefreshLayout swipeRefreshLayout;
-
     boolean isNightMode;
 
 
@@ -56,12 +57,12 @@ public class MainActivity extends AppCompatActivity {
         isNightMode = sharedPreferences.getBoolean("NightMode", false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        nightMode = findViewById(R.id.night_mode_switch);
-        if (isNightMode) {
-            nightMode.setImageResource(R.drawable.ic_night_mode);
-        } else {
-            nightMode.setImageResource(R.drawable.ic_day_mode);
-        }
+//        nightMode = findViewById(R.id.night_mode_switch1);
+//        if (isNightMode) {
+//            nightMode.setImageResource(R.drawable.ic_night_mode);
+//        } else {
+//            nightMode.setImageResource(R.drawable.ic_day_mode);
+//        }
 
 
         bottomNavigationView = findViewById(R.id.navigation_bar);
@@ -95,23 +96,51 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
-        nightMode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isNightMode) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor.putBoolean("NightMode", false);
-                    nightMode.setImageResource(R.drawable.ic_day_mode);
-                    isNightMode = false;
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor.putBoolean("NightMode", true);
-                    nightMode.setImageResource(R.drawable.ic_night_mode);
-                    isNightMode = true;
-                }
-                editor.apply();
+//        nightMode.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (isNightMode) {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//                    editor.putBoolean("NightMode", false);
+//                    nightMode.setImageResource(R.drawable.ic_day_mode);
+//                    isNightMode = false;
+//                } else {
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//                    editor.putBoolean("NightMode", true);
+//                    nightMode.setImageResource(R.drawable.ic_night_mode);
+//                    isNightMode = true;
+//                }
+//                editor.apply();
+//            }
+//        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.night_mode_switch) {
+            if (isNightMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                editor.putBoolean("NightMode", false);
+                item.setIcon(R.drawable.ic_day_mode);
+                isNightMode = false;
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                editor.putBoolean("NightMode", true);
+                item.setIcon(R.drawable.ic_night_mode);
+                isNightMode = true;
             }
-        });
+            editor.apply();
+        } else if (item.getItemId() == R.id.layout_btn) {
+            Toast.makeText(this, "More", Toast.LENGTH_SHORT).show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
