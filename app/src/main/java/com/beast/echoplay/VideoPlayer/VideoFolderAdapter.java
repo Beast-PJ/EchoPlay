@@ -66,11 +66,18 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
             }
         });
         holder.menuMore.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingInflatedId")
             @Override
             public void onClick(View v) {
                 bottomSheetDialog = new BottomSheetDialog(mContext, R.style.BottomSheetTheme);
                 View bsView = LayoutInflater.from(mContext).inflate(R.layout.video_bs_layout,
                         v.findViewById(R.id.bottom_sheet));
+                bsView.findViewById(R.id.bs_close).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                    }
+                });
                 bsView.findViewById(R.id.bs_play).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

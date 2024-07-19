@@ -1,9 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="Base.Theme.EchoPlay" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.EchoPlay" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">#0246CD</item>
     </style>
+
 
     <style name="BottomSheetTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
@@ -23,4 +24,5 @@
     <style name="Theme.EchoPlay.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.EchoPlay.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

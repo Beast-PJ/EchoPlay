@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     PlayerView playerView;
     SimpleExoPlayer simpleExoPlayer;
     TextView video_title;
-    ImageView next, previous;
+    ImageView next, previous, videoBack, lock, unlock, scaling;
+    RelativeLayout root;
     int postion = -1;
     ArrayList<VideoFiles> myFiles = new ArrayList<>();
+    private ControlsMode controlsMode;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -44,13 +47,76 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         playerView = findViewById(R.id.exoplayer);
         next = findViewById(R.id.next);
         previous = findViewById(R.id.prev);
+        videoBack = findViewById(R.id.video_back);
+        lock = findViewById(R.id.lock);
+        unlock = findViewById(R.id.unlock);
+        scaling = findViewById(R.id.scaling);
+        root = findViewById(R.id.root_layout);
         video_title = findViewById(R.id.video_text);
         postion = getIntent().getIntExtra("postion", -1);
         myFiles = foldervideoFiles;
         next.setOnClickListener(this);
         previous.setOnClickListener(this);
+        videoBack.setOnClickListener(this);
+        lock.setOnClickListener(this);
+        unlock.setOnClickListener(this);
+        scaling.setOnClickListener(this);
         playVideo(postion);
 
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public void onClick(View v) {
+        String contentDescription = String.valueOf(v.getContentDescription());
+        switch (contentDescription) {
+            case "next":
+                try {
+                    simpleExoPlayer.stop();
+                    postion++;
+                    playVideo(postion);
+                } catch (Exception e) {
+                    Toast.makeText(this, "No Next Video", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+
+            case "prev":
+                try {
+                    simpleExoPlayer.stop();
+                    postion--;
+                    playVideo(postion);
+                } catch (Exception e) {
+                    Toast.makeText(this, "No Next Video", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+
+            case "videoBack":
+                if (simpleExoPlayer != null) {
+                    simpleExoPlayer.release();
+                }
+                finish();
+                break;
+
+            case "lock":
+                controlsMode = ControlsMode.FULLSCREEN;
+                root.setVisibility(View.VISIBLE);
+                lock.setVisibility(View.INVISIBLE);
+                Toast.makeText(this, "unLocked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "unlock":
+                controlsMode = ControlsMode.LOCK;
+                root.setVisibility(View.INVISIBLE);
+                lock.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "Locked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case "scaling":
+
+                break;
+        }
     }
 
     public void playVideo(int position) {
@@ -70,29 +136,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @Override
-    public void onClick(View v) {
-        CharSequence contentDescription = v.getContentDescription();
-        if (contentDescription.equals("next")) {
-            try {
-                simpleExoPlayer.stop();
-                postion++;
-                playVideo(postion);
-            } catch (Exception e) {
-                Toast.makeText(this, "No Next Video", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        } else if (contentDescription.equals("prev")) {
-            try {
-                simpleExoPlayer.stop();
-                postion--;
-                playVideo(postion);
-            } catch (Exception e) {
-                Toast.makeText(this, "No Next Video", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
+    public enum ControlsMode {
+        LOCK, FULLSCREEN
     }
 
     private void setFullScreenMethod() {

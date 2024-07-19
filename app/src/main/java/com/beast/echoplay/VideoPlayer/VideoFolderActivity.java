@@ -31,11 +31,10 @@ public class VideoFolderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_folder);
         recyclerView = findViewById(R.id.FolderVideoRV);
-        pageTitle = findViewById(R.id.page_title);
         myFolderName = getIntent().getStringExtra("folderName");
         File file = new File(myFolderName);
         String currentFolder = file.getName();
-        pageTitle.setText(currentFolder);
+        getSupportActionBar().setTitle(currentFolder);
 
         if (myFolderName != null) {
             videoFilesArrayList = getVideoFiles(this, myFolderName);
