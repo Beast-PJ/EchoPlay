@@ -1,14 +1,23 @@
 package com.beast.echoplay.VideoPlayer;
 
+import static com.beast.echoplay.MainActivity.MY_PREF;
+
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +31,7 @@ public class VideoFolderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     VideoFolderAdapter videoFolderAdapter;
     TextView pageTitle;
-    String myFolderName;
+    String myFolderName, sort_order;
     ArrayList<VideoFiles> videoFilesArrayList = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -46,10 +55,79 @@ public class VideoFolderActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        SharedPreferences preferences = getSharedPreferences(MY_PREF, MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = preferences.edit();
+        if (item.getItemId() == R.id.layout_btn) {
+            Toast.makeText(this, "More", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.sort_by) {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+            alertDialog.setTitle("Sort By");
+            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    editor1.apply();
+                    finish();
+                    startActivity(getIntent());
+                    dialog.dismiss();
+                }
+            });
+            String[] items = {"Name (A to Z)", "Size (Big to Small)", "Date (New to Old)",
+                    "Length (Long to Short)"};
+            alertDialog.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            editor1.putString("sort", "sortName");
+                            break;
+                        case 1:
+                            editor1.putString("sort", "sortSize");
+                            break;
+                        case 2:
+                            editor1.putString("sort", "sortDate");
+                            break;
+                        case 3:
+                            editor1.putString("sort", "sortLength");
+                            break;
+                    }
+                }
+            });
+            alertDialog.create().show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<VideoFiles> getVideoFiles(Context context, String folderName) {
+        SharedPreferences preferences = getSharedPreferences(MY_PREF, MODE_PRIVATE);
+        String sortValue = preferences.getString("sort", "abcd");
         ArrayList<VideoFiles> tempvideoFiles = new ArrayList<>();
         Uri uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+
+        switch (sortValue) {
+            case "sortName":
+                sort_order = MediaStore.MediaColumns.DISPLAY_NAME + " ASC";
+                break;
+            case "sortSize":
+                sort_order = MediaStore.MediaColumns.SIZE + " DESC";
+                break;
+            case "sortDate":
+                sort_order = MediaStore.MediaColumns.DATE_ADDED + " DESC";
+                break;
+            case "sortLength":
+                sort_order = MediaStore.MediaColumns.DURATION + " DESC";
+                break;
+        }
+
         String[] projection = {
                 MediaStore.Video.Media._ID,
                 MediaStore.Video.Media.DATA,
@@ -62,7 +140,7 @@ public class VideoFolderActivity extends AppCompatActivity {
         };
         String selection = MediaStore.Video.Media.DATA + " like?";
         String[] selectionArgs = new String[]{"%" + folderName + "%"};
-        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+        Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, sort_order);
         if (cursor != null) {
             while (cursor.moveToNext()) {
 
