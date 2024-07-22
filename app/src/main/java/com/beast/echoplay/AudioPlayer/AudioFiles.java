@@ -4,18 +4,29 @@ import java.io.Serializable;
 
 public class AudioFiles implements Serializable {
     private String id;
+
     private String title;
     private String path;
-    private String duration;
+    private final String duration;
     private String artist;
 
-    public AudioFiles(String id, String title, String path, String duration, String artist) {
+    String size;
+    String dateAdded;
+    String fileName;
+    String bucket;
+
+    public AudioFiles(String id, String title, String path, String duration, String artist, String size, String dateAdded, String fileName, String bucket) {
         this.id = id;
         this.title = title;
         this.path = path;
         this.duration = duration;
         this.artist = artist;
+        this.size = size;
+        this.dateAdded = dateAdded;
+        this.fileName = fileName;
+        this.bucket = bucket;
     }
+
 
     // Getters and Setters
 
@@ -47,9 +58,6 @@ public class AudioFiles implements Serializable {
         return duration;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
 
     public String getArtist() {
         return artist;
@@ -57,5 +65,37 @@ public class AudioFiles implements Serializable {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(String dateAdded) {
+        this.dateAdded = dateAdded;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(String bucket) {
+        this.bucket = bucket;
     }
 }

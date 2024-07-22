@@ -70,7 +70,7 @@ public class AudioFolderActivity extends AppCompatActivity {
                 String bucket = cursor.getString(7);
                 String artist = cursor.getString(8);
 
-                AudioFiles AudioFiles = new AudioFiles(id, title, path, duration, artist);
+                AudioFiles AudioFiles = new AudioFiles(id, title, path, duration, artist, size, dateAdded, fileName, bucket);
                 if (folderName.endsWith(bucket)) {
                     tempAudioFiles.add(AudioFiles);
                 }

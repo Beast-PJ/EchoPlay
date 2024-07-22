@@ -41,13 +41,10 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
         holder.fileName.setText(folderAudioFiles.get(position).getTitle());
         holder.audioDuration.setText(formatDuration(Long.parseLong(folderAudioFiles.get(position).getDuration())));
         Glide.with(mContext).load(new File(folderAudioFiles.get(position).getPath())).into(holder.thumbnail);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, AudioPlayerActivity.class);
-                intent.putExtra("position", position);  // corrected key here
-                mContext.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, AudioPlayerActivity.class);
+            intent.putExtra("position", position);  // corrected key here
+            mContext.startActivity(intent);
         });
     }
 

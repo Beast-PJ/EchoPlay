@@ -29,7 +29,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private Runnable updateSeekBar;
     ArrayList<AudioFiles> myFiles = new ArrayList<>();
-    private ImageView albumArt, playPauseButton, prevButton, nextButton;
+    private ImageView albumArt;
+    private ImageView playPauseButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +43,8 @@ public class AudioPlayerActivity extends AppCompatActivity {
         songCurrentTime = findViewById(R.id.currentTime);
         albumArt = findViewById(R.id.coverArt);
         playPauseButton = findViewById(R.id.play_pause_button);
-        prevButton = findViewById(R.id.previous_button);
-        nextButton = findViewById(R.id.next_button);
+        ImageView prevButton = findViewById(R.id.previous_button);
+        ImageView nextButton = findViewById(R.id.next_button);
         seekBar = findViewById(R.id.seek_bar);
 
         position = getIntent().getIntExtra("position", -1);

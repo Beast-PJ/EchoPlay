@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -21,17 +22,19 @@
         android:background="@drawable/background_drw"
         android:gravity="center"
         android:text="1"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        tools:ignore="TextSizeCheck" />
 
     <TextView
         android:id="@+id/folder_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Folder Name"
-        android:textStyle="bold"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/folder_image"
-        android:textSize="15dp" />
+        android:text="Folder Name"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        tools:ignore="TextSizeCheck" />
 
 </RelativeLayout>
