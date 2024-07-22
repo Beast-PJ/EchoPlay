@@ -40,13 +40,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.MyHolder> 
         String folder = folderName.get(position).substring(index + 1);
         holder.folder.setText(folder);
         holder.counterFiles.setText(String.valueOf(NumberOfFiles(folderName.get(position))));
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mcontext, AudioFolderActivity.class);
-                intent.putExtra("folderName", folderName.get(position));
-                mcontext.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(mcontext, AudioFolderActivity.class);
+            intent.putExtra("folderName", folderName.get(position));
+            mcontext.startActivity(intent);
         });
 
     }

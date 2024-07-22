@@ -1,9 +1,7 @@
 package com.beast.echoplay.VideoPlayer;
 
-import static com.beast.echoplay.MainActivity.MY_PREF;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,7 +10,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,9 +25,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class VideoFolderActivity extends AppCompatActivity {
+    private static final String MY_PREF = "my pref";
     RecyclerView recyclerView;
     VideoFolderAdapter videoFolderAdapter;
-    TextView pageTitle;
     String myFolderName, sort_order;
     ArrayList<VideoFiles> videoFilesArrayList = new ArrayList<>();
 
@@ -70,34 +67,28 @@ public class VideoFolderActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.sort_by) {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
             alertDialog.setTitle("Sort By");
-            alertDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    editor1.apply();
-                    finish();
-                    startActivity(getIntent());
-                    dialog.dismiss();
-                }
+            alertDialog.setPositiveButton("Ok", (dialog, which) -> {
+                editor1.apply();
+                finish();
+                startActivity(getIntent());
+                dialog.dismiss();
             });
             String[] items = {"Name (A to Z)", "Size (Big to Small)", "Date (New to Old)",
                     "Length (Long to Short)"};
-            alertDialog.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case 0:
-                            editor1.putString("sort", "sortName");
-                            break;
-                        case 1:
-                            editor1.putString("sort", "sortSize");
-                            break;
-                        case 2:
-                            editor1.putString("sort", "sortDate");
-                            break;
-                        case 3:
-                            editor1.putString("sort", "sortLength");
-                            break;
-                    }
+            alertDialog.setSingleChoiceItems(items, -1, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        editor1.putString("sort", "sortName");
+                        break;
+                    case 1:
+                        editor1.putString("sort", "sortSize");
+                        break;
+                    case 2:
+                        editor1.putString("sort", "sortDate");
+                        break;
+                    case 3:
+                        editor1.putString("sort", "sortLength");
+                        break;
                 }
             });
             alertDialog.create().show();

@@ -1,7 +1,10 @@
 package com.beast.echoplay;
 
+import android.annotation.SuppressLint;
+
 public abstract class Utility {
 
+    @SuppressLint("DefaultLocale")
     public static String timeConversion(Long millie) {
         if (millie != null) {
             long seconds = (millie / 1000);

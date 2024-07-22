@@ -36,7 +36,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     RelativeLayout root;
     int postion = -1;
     ArrayList<VideoFiles> myFiles = new ArrayList<>();
-    private ControlsMode controlsMode;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -100,7 +99,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case "lock":
-                controlsMode = ControlsMode.FULLSCREEN;
+                ControlsMode controlsMode = ControlsMode.FULLSCREEN;
                 root.setVisibility(View.VISIBLE);
                 lock.setVisibility(View.INVISIBLE);
                 Toast.makeText(this, "unLocked", Toast.LENGTH_SHORT).show();
