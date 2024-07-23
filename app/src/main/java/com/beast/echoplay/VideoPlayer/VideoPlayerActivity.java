@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.media3.common.C;
+import androidx.media3.common.util.UnstableApi;
 
 import com.beast.echoplay.R;
 import com.google.android.exoplayer2.MediaItem;
@@ -23,6 +25,7 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSource;
 
@@ -35,7 +38,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     ImageView next, previous, videoBack, lock, unlock, scaling;
     RelativeLayout root;
     int postion = -1;
-    ArrayList<VideoFiles> myFiles = new ArrayList<>();
+    ControlsMode controlsMode;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -59,10 +62,12 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         videoBack.setOnClickListener(this);
         lock.setOnClickListener(this);
         unlock.setOnClickListener(this);
-        scaling.setOnClickListener(this);
+        scaling.setOnClickListener(firstListerner);
         playVideo(postion);
 
     }
+
+    ArrayList<VideoFiles> myFiles = new ArrayList<>();
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -99,7 +104,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case "lock":
-                ControlsMode controlsMode = ControlsMode.FULLSCREEN;
+                controlsMode = ControlsMode.FULLSCREEN;
                 root.setVisibility(View.VISIBLE);
                 lock.setVisibility(View.INVISIBLE);
                 Toast.makeText(this, "unLocked", Toast.LENGTH_SHORT).show();
@@ -118,6 +123,41 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
+    public enum ControlsMode {
+        LOCK, FULLSCREEN
+    }
+
+    View.OnClickListener firstListerner = new View.OnClickListener() {
+        @UnstableApi
+        @Override
+        public void onClick(View v) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+            simpleExoPlayer.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.fullscreen);
+            scaling.setOnClickListener(secondListerner);
+        }
+    };
+    View.OnClickListener secondListerner = new View.OnClickListener() {
+        @UnstableApi
+        @Override
+        public void onClick(View v) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+            simpleExoPlayer.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.zoom);
+            scaling.setOnClickListener(thirdListerner);
+        }
+    };
+    View.OnClickListener thirdListerner = new View.OnClickListener() {
+        @UnstableApi
+        @Override
+        public void onClick(View v) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+            simpleExoPlayer.setVideoScalingMode(C.VIDEO_SCALING_MODE_DEFAULT);
+            scaling.setImageResource(R.drawable.fit_screen);
+            scaling.setOnClickListener(firstListerner);
+        }
+    };
+
     public void playVideo(int position) {
         String path = myFiles.get(postion).getPath();
         String video_name = myFiles.get(position).getFileName();
@@ -135,9 +175,6 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    public enum ControlsMode {
-        LOCK, FULLSCREEN
-    }
 
     private void setFullScreenMethod() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
