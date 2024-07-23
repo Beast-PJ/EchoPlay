@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,8 +24,9 @@ import com.beast.echoplay.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class VideoFolderActivity extends AppCompatActivity {
+public class VideoFolderActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private static final String MY_PREF = "my pref";
     RecyclerView recyclerView;
     VideoFolderAdapter videoFolderAdapter;
@@ -38,7 +40,7 @@ public class VideoFolderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_folder);
         recyclerView = findViewById(R.id.FolderVideoRV);
         myFolderName = getIntent().getStringExtra("folderName");
-        File file = new File(myFolderName);
+        File file = new File(Objects.requireNonNull(myFolderName));
         String currentFolder = file.getName();
         getSupportActionBar().setTitle(currentFolder);
 
@@ -55,6 +57,9 @@ public class VideoFolderActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_video);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -152,5 +157,23 @@ public class VideoFolderActivity extends AppCompatActivity {
             cursor.close();
         }
         return tempvideoFiles;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String inputs = newText.toLowerCase();
+        ArrayList<VideoFiles> mediaFiles = new ArrayList<>();
+        for (VideoFiles media : videoFilesArrayList) {
+            if (media.getTitle().toLowerCase().contains(inputs)) {
+                mediaFiles.add(media);
+            }
+        }
+        videoFolderAdapter.updateVideoFiles(mediaFiles);
+        return true;
     }
 }

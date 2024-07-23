@@ -221,4 +221,11 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
         else
             return String.format("%02d:%02d", minutes, seconds);
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateVideoFiles(ArrayList<VideoFiles> files) {
+        foldervideoFiles = new ArrayList<>();
+        foldervideoFiles.addAll(files);
+        notifyDataSetChanged();
+    }
 }
