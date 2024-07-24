@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.beast.echoplay.R;
+import com.beast.echoplay.Utility;
 import com.bumptech.glide.Glide;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.fileName.setText(folderAudioFiles.get(position).getTitle());
-        holder.audioDuration.setText(formatDuration(Long.parseLong(folderAudioFiles.get(position).getDuration())));
+        holder.audioDuration.setText(Utility.timeConversion(Long.parseLong(folderAudioFiles.get(position).getDuration())));
         Glide.with(mContext).load(new File(folderAudioFiles.get(position).getPath())).into(holder.thumbnail);
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, AudioPlayerActivity.class);
@@ -53,13 +54,6 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
         return folderAudioFiles.size();
     }
 
-    @SuppressLint("DefaultLocale")
-    private String formatDuration(long duration) {
-        duration = duration + 1;
-        long minutes = (duration / 1000) / 60;
-        long seconds = (duration / 1000) % 60;
-        return String.format("%02d:%02d", minutes, seconds);
-    }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 

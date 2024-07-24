@@ -101,7 +101,6 @@ public class VideoFolderActivity extends AppCompatActivity implements SearchView
         return super.onOptionsItemSelected(item);
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<VideoFiles> getVideoFiles(Context context, String folderName) {
         SharedPreferences preferences = getSharedPreferences(MY_PREF, MODE_PRIVATE);

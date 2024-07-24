@@ -17,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.C;
 import androidx.media3.common.util.UnstableApi;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.beast.echoplay.R;
 import com.google.android.exoplayer2.MediaItem;
@@ -40,7 +42,11 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     int postion = -1;
     ControlsMode controlsMode;
 
-    @SuppressLint("MissingInflatedId")
+    ArrayList<IconModel> iconModelArrayList = new ArrayList<>();
+    PlaybackIconsAdapter playbackIconsAdapter;
+    RecyclerView recyclerViewIcons;
+
+    @SuppressLint({"MissingInflatedId", "NotifyDataSetChanged"})
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,24 +56,35 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         next = findViewById(R.id.next);
         previous = findViewById(R.id.prev);
         videoBack = findViewById(R.id.video_back);
-        lock = findViewById(R.id.lock);
         unlock = findViewById(R.id.unlock);
+        lock = findViewById(R.id.lock);
         scaling = findViewById(R.id.scaling);
         root = findViewById(R.id.root_layout);
         video_title = findViewById(R.id.video_text);
+        recyclerViewIcons = findViewById(R.id.recyclerview_icon);
         postion = getIntent().getIntExtra("postion", -1);
         myFiles = foldervideoFiles;
+//        screenOrientation();
         next.setOnClickListener(this);
         previous.setOnClickListener(this);
         videoBack.setOnClickListener(this);
         lock.setOnClickListener(this);
         unlock.setOnClickListener(this);
         scaling.setOnClickListener(firstListerner);
+
+        iconModelArrayList.add(new IconModel(R.drawable.right, ""));
+        iconModelArrayList.add(new IconModel(R.drawable.ic_night_mode, "Night"));
+        iconModelArrayList.add(new IconModel(R.drawable.volume_off, "Mute"));
+        iconModelArrayList.add(new IconModel(R.drawable.screen_rotation, "Rotate"));
+        playbackIconsAdapter = new PlaybackIconsAdapter(iconModelArrayList, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,
+                RecyclerView.HORIZONTAL, true);
+        recyclerViewIcons.setLayoutManager(layoutManager);
+        recyclerViewIcons.setAdapter(playbackIconsAdapter);
+        playbackIconsAdapter.notifyDataSetChanged();
         playVideo(postion);
 
     }
-
-    ArrayList<VideoFiles> myFiles = new ArrayList<>();
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -103,29 +120,42 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
 
-            case "lock":
+            case "unlock":
                 controlsMode = ControlsMode.FULLSCREEN;
                 root.setVisibility(View.VISIBLE);
-                lock.setVisibility(View.INVISIBLE);
-                Toast.makeText(this, "unLocked", Toast.LENGTH_SHORT).show();
+                unlock.setVisibility(View.INVISIBLE);
                 break;
 
-            case "unlock":
+            case "lock":
                 controlsMode = ControlsMode.LOCK;
                 root.setVisibility(View.INVISIBLE);
-                lock.setVisibility(View.VISIBLE);
-                Toast.makeText(this, "Locked", Toast.LENGTH_SHORT).show();
+                unlock.setVisibility(View.VISIBLE);
                 break;
 
-            case "scaling":
-
-                break;
         }
     }
 
-    public enum ControlsMode {
-        LOCK, FULLSCREEN
+    ArrayList<VideoFiles> myFiles = new ArrayList<>();
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void playVideo(int position) {
+        String path = myFiles.get(postion).getPath();
+        String video_name = myFiles.get(position).getFileName();
+        video_title.setText(video_name);
+        if (path != null) {
+            Uri uri = Uri.parse(path);
+            simpleExoPlayer = new SimpleExoPlayer.Builder(this).build();
+            DefaultDataSource.Factory factory = new DefaultDataSource.Factory(this);
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+            MediaSource mediaSource = new ProgressiveMediaSource.Factory(factory, extractorsFactory).createMediaSource(MediaItem.fromUri(uri));
+            playerView.setPlayer(simpleExoPlayer);
+            playerView.setKeepScreenOn(true);
+            simpleExoPlayer.prepare(mediaSource);
+            simpleExoPlayer.setPlayWhenReady(true);
+        }
     }
+
+
 
     View.OnClickListener firstListerner = new View.OnClickListener() {
         @UnstableApi
@@ -158,21 +188,8 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         }
     };
 
-    public void playVideo(int position) {
-        String path = myFiles.get(postion).getPath();
-        String video_name = myFiles.get(position).getFileName();
-        video_title.setText(video_name);
-        if (path != null) {
-            Uri uri = Uri.parse(path);
-            simpleExoPlayer = new SimpleExoPlayer.Builder(this).build();
-            DefaultDataSource.Factory factory = new DefaultDataSource.Factory(this);
-            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            MediaSource mediaSource = new ProgressiveMediaSource.Factory(factory, extractorsFactory).createMediaSource(MediaItem.fromUri(uri));
-            playerView.setPlayer(simpleExoPlayer);
-            playerView.setKeepScreenOn(true);
-            simpleExoPlayer.prepare(mediaSource);
-            simpleExoPlayer.setPlayWhenReady(true);
-        }
+    public enum ControlsMode {
+        LOCK, FULLSCREEN
     }
 
 

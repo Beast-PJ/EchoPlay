@@ -22,8 +22,6 @@ public class AudioFragment extends Fragment {
 
     public AudioFragment() {
     }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_files, container, false);

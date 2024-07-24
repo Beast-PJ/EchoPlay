@@ -1,5 +1,6 @@
 package com.beast.echoplay.VideoPlayer;
 
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -55,7 +56,7 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.fileName.setText(foldervideoFiles.get(position).getTitle());
-        holder.videoDuration.setText(formatDuration(Long.parseLong(foldervideoFiles.get(position).getDuration())));
+        holder.videoDuration.setText(Utility.timeConversion(Long.parseLong(foldervideoFiles.get(position).getDuration())));
         Glide.with(mContext).load(new File(foldervideoFiles.get(position).getPath())).into(holder.thumbnail);
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, VideoPlayerActivity.class);
@@ -210,17 +211,6 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
         }
     }
 
-    @SuppressLint("DefaultLocale")
-    private String formatDuration(long duration) {
-        duration = duration + 1;
-        long hours = (duration / 3600000);
-        long minutes = (duration / 1000) / 60;
-        long seconds = (duration / 1000) % 60;
-        if (hours > 0)
-            return String.format("%02:%02d:%02d", hours, minutes, seconds);
-        else
-            return String.format("%02d:%02d", minutes, seconds);
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     public void updateVideoFiles(ArrayList<VideoFiles> files) {

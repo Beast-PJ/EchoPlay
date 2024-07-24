@@ -18,6 +18,7 @@
         app:hide_on_touch="true"
         app:resize_mode="fit"
         app:show_timeout="5000"
+
         app:shutter_background_color="@color/black"
         app:use_controller="true" />
 
