@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/top_toolbar"
+    <RelativeLayout
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentTop="true"
-        android:gravity="center"
-        android:visibility="visible"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_margin="25dp"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:id="@+id/top_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
         <ImageView
             android:id="@+id/video_back"
@@ -42,33 +47,41 @@
             android:layout_gravity="center_vertical"
             android:background="@drawable/playlist" />
 
-        <ImageButton
-            android:id="@+id/video_more"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/more" />
+            <ImageButton
+                android:id="@+id/video_more"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/more" />
 
-    </LinearLayout>
+        </LinearLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/top_toolbar"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp" />
 
-    <LinearLayout
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        <LinearLayout
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
         <ImageView
-            android:id="@+id/unlock"
+            android:id="@+id/lock"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:contentDescription="unlock"
+            android:contentDescription="lock"
             android:src="@drawable/screen_unlock" />
 
         <ImageView
@@ -172,17 +185,19 @@
             app:unplayed_color="@color/white" />
 
     </RelativeLayout>
+    </RelativeLayout>
 
     <ImageView
-        android:id="@+id/lock"
+        android:id="@+id/unlock"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_margin="25dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="10dp"
         android:background="@drawable/ripple_circle"
-        android:contentDescription="lock"
+        android:contentDescription="unlock"
         android:scaleType="centerInside"
         android:src="@drawable/screen_lock"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 </RelativeLayout>
