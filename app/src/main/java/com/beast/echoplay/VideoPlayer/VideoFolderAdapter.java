@@ -8,7 +8,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -172,14 +171,9 @@ public class VideoFolderAdapter extends RecyclerView.Adapter<VideoFolderAdapter.
                 String format = namewithFormat.substring(index + 1);
                 String five = "Format: " + format;
 
-                MediaMetadataRetriever metadataRetriever = new MediaMetadataRetriever();
-                metadataRetriever.setDataSource(foldervideoFiles.get(position).getPath());
-                String height = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
-                String width = metadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
-                String six = "Resolution: " + width + "x" + height;
 
                 alertDialog.setMessage(one + "\n\n" + two + "\n\n" + three + "\n\n" + four +
-                        "\n\n" + five + "\n\n" + six);
+                        "\n\n" + five);
                 alertDialog.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
                 alertDialog.show();
                 bottomSheetDialog.dismiss();

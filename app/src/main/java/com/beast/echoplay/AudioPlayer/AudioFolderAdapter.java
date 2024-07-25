@@ -3,6 +3,9 @@ package com.beast.echoplay.AudioPlayer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.beast.echoplay.R;
 import com.beast.echoplay.Utility;
-import com.bumptech.glide.Glide;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.MyViewHolder> {
     static ArrayList<AudioFiles> folderAudioFiles;
@@ -40,13 +42,27 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.fileName.setText(folderAudioFiles.get(position).getTitle());
-        holder.audioDuration.setText(Utility.timeConversion(Long.parseLong(folderAudioFiles.get(position).getDuration())));
-        Glide.with(mContext).load(new File(folderAudioFiles.get(position).getPath())).into(holder.thumbnail);
+        Objects.requireNonNull(holder).audioDuration.setText(Utility.timeConversion(Long.parseLong(folderAudioFiles.get(position).getDuration())));
+        loadCoverArt(folderAudioFiles.get(position).getPath(), holder.item_thumbnail);
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(mContext, AudioPlayerActivity.class);
             intent.putExtra("position", position);  // corrected key here
             mContext.startActivity(intent);
         });
+
+
+    }
+
+    private void loadCoverArt(String path, ImageView albumArt) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        retriever.setDataSource(path);
+        byte[] art = retriever.getEmbeddedPicture();
+        if (art != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(art, 0, art.length);
+            albumArt.setImageBitmap(bitmap);
+        } else {
+            albumArt.setImageResource(R.drawable.music_note);
+        }
     }
 
     @Override
@@ -57,12 +73,12 @@ public class AudioFolderAdapter extends RecyclerView.Adapter<AudioFolderAdapter.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView thumbnail;
+        ImageView item_thumbnail;
         TextView fileName, audioDuration;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            thumbnail = itemView.findViewById(R.id.album_art);
+            item_thumbnail = itemView.findViewById(R.id.album_art);
             fileName = itemView.findViewById(R.id.fileName);
             audioDuration = itemView.findViewById(R.id.audioDuration);
         }
