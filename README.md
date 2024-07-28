@@ -46,7 +46,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 If you have any questions, feel free to reach out at p.jadhav61657@gmail.com
-
----
-
-Feel free to customize this template further to suit your project's needs. If you have any specific details or additional features you want to highlight, let me know!
