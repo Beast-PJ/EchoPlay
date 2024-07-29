@@ -39,6 +39,7 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
     TextView video_title;
     ImageView next, previous, videoBack, lock, unlock, scaling;
     RelativeLayout root;
+    boolean expand = false;
     int postion = -1;
     ControlsMode controlsMode;
 
