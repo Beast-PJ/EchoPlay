@@ -1,16 +1,17 @@
 # EchoPlay
 
-EchoPlay is a versatile media player for Android that plays both videos and songs. It is built using ExoPlayer and Java, and comes packed with various features to enhance the user experience.
+EchoPlay is an advanced media player for Android that plays both songs and videos, offering a rich set of features to enhance your media experience. Built using ExoPlayer and Java, EchoPlay combines functionality and aesthetics for a superior user experience.
 
 ## Features
 
-- **Video and Audio Playback:** Supports a wide range of media formats using ExoPlayer.
-- **Dark Mode:** Easy on the eyes with a toggle switch for dark mode.
-- **Playing Queue:** Manage your playlist with an intuitive playing queue.
+- **Versatile Media Playback:** Supports a wide range of audio and video formats using ExoPlayer.
+- **Background Playback:** Continue enjoying your media even when the app is running in the background.
+- **Lock Screen Controls:** Easily control playback from your lock screen.
+- **Dark Mode:** Switch to dark mode to reduce eye strain and save battery life.
+- **Playing Queue:** Manage your playlist with an intuitive and flexible playing queue.
 - **Portrait and Landscape Mode:** Seamlessly switch between portrait and landscape orientations during video playback.
-- **Sensor-Based Orientation:** Utilizes device sensors to adjust video playback orientation automatically.
+- **Sensor-Based Orientation:** Utilizes device sensors to automatically adjust video playback orientation.
 - **User-Friendly Interface:** Clean and modern design for a smooth user experience.
-
 
 ## Installation
 
@@ -45,4 +46,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-If you have any questions, feel free to reach out at p.jadhav61657@gmail.com
+If you have any questions, feel free to reach out at p.jadhav61657@gmail.com.
