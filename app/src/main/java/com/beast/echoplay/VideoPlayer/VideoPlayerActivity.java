@@ -3,6 +3,8 @@ package com.beast.echoplay.VideoPlayer;
 import static com.beast.echoplay.VideoPlayer.VideoFolderAdapter.foldervideoFiles;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media3.common.C;
+import androidx.media3.common.PlaybackParameters;
 import androidx.media3.common.util.UnstableApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -83,6 +86,36 @@ public class VideoPlayerActivity extends AppCompatActivity implements View.OnCli
         recyclerViewIcons.setLayoutManager(layoutManager);
         recyclerViewIcons.setAdapter(playbackIconsAdapter);
         playbackIconsAdapter.notifyDataSetChanged();
+
+        playbackIconsAdapter.setOnItemClickListener(new PlaybackIconsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                if (position == 0) {
+                    if (expand) {
+                        iconModelArrayList.clear();
+                        iconModelArrayList.add(new IconModel(R.drawable.right, ""));
+                        iconModelArrayList.add(new IconModel(R.drawable.ic_night_mode, "Night"));
+                        iconModelArrayList.add(new IconModel(R.drawable.ic_pip_mode, "Popup"));
+                        iconModelArrayList.add(new IconModel(R.drawable.equalizer, "Equalizer"));
+                        iconModelArrayList.add(new IconModel(R.drawable.screen_rotation, "Rotate"));
+                        playbackIconsAdapter.notifyDataSetChanged();
+                        expand = false;
+                    } else {
+                        if (iconModelArrayList.size() == 5) {
+                            iconModelArrayList.add(new IconModel(R.drawable.volume_off, "Mute"));
+                            iconModelArrayList.add(new IconModel(R.drawable.volume, "Volume"));
+                            iconModelArrayList.add(new IconModel(R.drawable.brightness, "Brightness"));
+                            iconModelArrayList.add(new IconModel(R.drawable.speed, "Speed"));
+                            iconModelArrayList.add(new IconModel(R.drawable.subtitle, "Subtitle"));
+                        }
+                        iconModelArrayList.set(position, new IconModel(R.drawable.left, ""));
+                        playbackIconsAdapter.notifyDataSetChanged();
+                        expand = true;
+                    }
+                }
+            }
+        });
+        
         playVideo(postion);
 
     }
