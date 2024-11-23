@@ -8,7 +8,6 @@ Welcome to **EchoPlay**, where entertainment meets innovation! Whether you're bi
 
 - **🎬 Video Playback**: Enjoy smooth video streaming with **ExoPlayer** for all formats.
 - **🎶 Music Player**: Groove to your favorite tracks with intuitive music controls.
-- **🎛️ Playlist Magic**: Organize media into personalized playlists, making your experience completely yours.
 - **🎮 Full Media Control**: Effortless media management with smart controls like play, pause, next, and previous.
 - **💾 Offline Mode**: Download your media and play it anytime, anywhere, no internet required!
 - **📁 Multi-Format Support**: Enjoy a wide variety of audio and video formats, so your library is always compatible.
